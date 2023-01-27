@@ -74,7 +74,7 @@ namespace PacmanMonogame.States
         {
             spriteBatch.Begin();
 
-            spriteBatch.DrawString(_font, "PacMan Game", new Vector2(850, 200), Color.Black);
+            spriteBatch.DrawString(_font, "Shooter game", new Vector2(850, 200), Color.Black);
 
             foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);

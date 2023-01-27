@@ -16,6 +16,8 @@ namespace PacmanMonogame.Sprites
         public float Speed { get; set; }
 
         public float Health;
+
+        public Rectangle rectangle;
         public bool isDead
         {
             get
@@ -40,6 +42,14 @@ namespace PacmanMonogame.Sprites
             GetActions(sprites);
         }
 
+        private void UpdateHealthBar(SpriteBatch spriteBatch)
+        {
+            if(Health > 0)
+            {
+                spriteBatch.Draw(_texture, rectangle, Color.White);
+            }
+
+        }
         private void GetActions(List<Sprite> sprites)
         {
 
@@ -63,11 +73,8 @@ namespace PacmanMonogame.Sprites
             }
             if (currentKey.IsKeyDown(Keys.S))
             {
-
                 Position -= direction * LinearVelocity;
             }
-
-
             if (currentKey.IsKeyDown(Keys.Space) && previousKey.IsKeyUp(Keys.Space))
             {
                 ShootBullet(sprites);

@@ -42,8 +42,8 @@ namespace Sprites
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
             Follow();
-            var randomNumber = Random.Next(0, 5000);
-            if(randomNumber > 4750) {
+            var randomNumber = Random.Next(0,100);
+            if(randomNumber > 98) {
                 ShootBullet(sprites);
             }
            
