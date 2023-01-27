@@ -34,13 +34,24 @@ namespace PacmanMonogame.Sprites
         public bool IsRemoved = false;
 
 
+        public Sprite  FollowTarget { get; set; }
+        public float FollowDistance { get; set; }
+        
+        public Rectangle Rectangle
+        {
+            get
+            {
+                return new Rectangle((int)Position.X - (int)Origin.X, (int)Position.Y - (int)Origin.Y, _texture.Width, _texture.Height);
+            }
+        }
+
 
         public Sprite(Texture2D texture)
         {
             _texture = texture;
         }
 
-   
+    
 
         public virtual void Update(GameTime gameTime, List<Sprite> sprites)
         {

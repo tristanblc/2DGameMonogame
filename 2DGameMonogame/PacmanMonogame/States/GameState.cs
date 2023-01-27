@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PacmanMonogame.Sprites;
+using Sprites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,6 +34,7 @@ namespace PacmanMonogame.States
             _game = game;
             _graphicsDevice = graphicsDevice;
             _content = content;
+        
 
         }
 
@@ -50,19 +52,39 @@ namespace PacmanMonogame.States
         {
             _spriteBatch = new SpriteBatch(_graphicsDevice);
             _texture = _content.Load<Texture2D>("play");
+
             var bulletTexture = _content.Load<Texture2D>("Bullet");
             _font = _content.Load<SpriteFont>("Font");
 
+
+
+            var player = new Player(_texture)
+            {
+                Position = new Vector2(100, 100),
+                Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
+                Bullet = new Bullet(bulletTexture)
+
+            };
+
             _sprites = new List<Sprite>() {
-                new Player(_texture )
+                player,
+                new Enemy(_texture)
                 {
-                    Position = new Vector2(100,100),
-                    Origin = new Vector2(_texture.Width/2,_texture.Height/2),
-                    Bullet = new Bullet(bulletTexture)
+                    Position = new Vector2(100,500),
+                    FollowTarget = player,
+                    FollowDistance = 1000f,
+                    Bullet =  new Bullet(bulletTexture)
+
+                },
+
+                new Enemy(_texture)
+                {
+                    Position = new Vector2(100,700),
+                    FollowTarget = player,
+                    FollowDistance = 1000f,
+                    Bullet =  new Bullet(bulletTexture)
 
                 }
-
-
             };
         }
 
