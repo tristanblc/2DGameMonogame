@@ -20,7 +20,7 @@ namespace PacmanMonogame.States
 
 
         private SpriteFont _font;
-        private Texture2D _pacmanTexture;
+        private Texture2D _texture;
 
 
         public static int ScreenWidth = 1920;
@@ -49,13 +49,16 @@ namespace PacmanMonogame.States
         public override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(_graphicsDevice);
-            _pacmanTexture = _content.Load<Texture2D>("pacman");
+            _texture = _content.Load<Texture2D>("play");
+            var bulletTexture = _content.Load<Texture2D>("Bullet");
             _font = _content.Load<SpriteFont>("Font");
 
             _sprites = new List<Sprite>() {
-                new Player( _pacmanTexture )
+                new Player(_texture )
                 {
-                    Position = new Vector2(100,100)
+                    Position = new Vector2(100,100),
+                    Origin = new Vector2(_texture.Width/2,_texture.Height/2),
+                    Bullet = new Bullet(bulletTexture)
 
                 }
 

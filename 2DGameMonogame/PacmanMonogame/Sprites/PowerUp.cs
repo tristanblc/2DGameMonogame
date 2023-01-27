@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PacmanMonogame.Sprites
 {
-    internal class PowerUp
+     public class PowerUp : Sprite
     {
     }
 }

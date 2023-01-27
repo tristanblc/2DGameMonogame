@@ -12,17 +12,20 @@ namespace PacmanMonogame.Sprites
     public class Player : Sprite
     {
        
-        public float Life { get; set; }
+     
         public float Speed { get; set; }
 
+        public float Health;
         public bool isDead
         {
             get
             {
-                return Life <= 0;
+                return Health <= 0;
             }
         }
 
+
+        public Bullet Bullet;
 
         public Player(Texture2D texture) : base(texture) 
         {
@@ -31,31 +34,60 @@ namespace PacmanMonogame.Sprites
         
         }
 
+
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
-            Move();
+            GetActions(sprites);
         }
 
-        private void Move()
+        private void GetActions(List<Sprite> sprites)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
+
+
+            previousKey = currentKey;
+            currentKey = Keyboard.GetState();
+
+            if (currentKey.IsKeyDown(Keys.A))
             {
-                Position.X -= 1;
+                _rotation -= MathHelper.ToRadians(RotationVelocity);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.E))
+            if (currentKey.IsKeyDown(Keys.E))
             {
-                Position.X += 1;
+                _rotation += MathHelper.ToRadians(RotationVelocity);
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.Z))
+            var direction = new Vector2((float)Math.Cos(MathHelper.ToRadians(180) - _rotation), -(float)Math.Sin(_rotation));
+
+            if (currentKey.IsKeyDown(Keys.Z))
             {
-                Position.Y -= 1;
+                Position += direction * LinearVelocity;
             }
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
+            if (currentKey.IsKeyDown(Keys.S))
             {
-                Position.Y += 1;
+
+                Position -= direction * LinearVelocity;
             }
 
+
+            if (currentKey.IsKeyDown(Keys.Space) && previousKey.IsKeyUp(Keys.Space))
+            {
+                ShootBullet(sprites);
+            }
         }
 
+
+        public void ShootBullet(List<Sprite> sprites)
+        {
+            var direction = new Vector2((float)Math.Cos( _rotation), (float)Math.Sin(_rotation));
+            var bullet = Bullet.Clone() as Bullet;
+                bullet.Direction = direction;
+                bullet.Position = this.Position;
+                bullet.LinearVelocity = this.LinearVelocity *2;
+                bullet.LifeSpan = 2f;
+                bullet.Parent = this;
+
+            sprites.Add(bullet);
+
+            
+        }
     }
 }
