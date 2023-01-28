@@ -48,7 +48,7 @@ namespace PacmanMonogame.States
             _graphicsDevice = graphicsDevice;
             _content = content;
             _random = new Random();
-            
+            _game = game;
 
         }
 
@@ -142,6 +142,8 @@ namespace PacmanMonogame.States
                 if(sprite is Enemy)
                     countEnemies++;
 
+            
+
             if(countEnemies == 0) 
             {
                 _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
@@ -150,6 +152,12 @@ namespace PacmanMonogame.States
                 });
             }
             player.Update(gameTime,_sprites);
+
+
+            if (player.isDead)
+            {
+                _game.ChangeState(new GameOverState(_game, _graphicsDevice, _content));
+            }
             PostUpdate(gameTime);
 
 
