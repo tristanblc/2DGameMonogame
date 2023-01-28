@@ -39,6 +39,7 @@ namespace PacmanMonogame.States
         Rectangle healthRectangle;
         private EnemyManager _enemyManager;
         private PowerUpManager _powerUpManager;
+        private MegaPowerUpManager _megaManager;
         private Random _random;
         private int numberOfEnemies { get; set; } = 3 ;
            
@@ -49,7 +50,7 @@ namespace PacmanMonogame.States
             _content = content;
             _random = new Random();
             _game = game;
-
+           
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -59,6 +60,8 @@ namespace PacmanMonogame.States
             foreach (var sprite in _sprites)
                 sprite.Draw(_spriteBatch);
             _spriteBatch.DrawString(_font, $"Health : {player.Health}", new Vector2(50, 30), Color.Black);
+            _spriteBatch.DrawString(_font, $"Ammo : {player.Cooldown  - player.ShootCounter}", new Vector2(50, 50), Color.Black);
+            _spriteBatch.DrawString(_font, $"Ammo Mega Shoot : {player.CooldownMega - player.ShootCounterMega}", new Vector2(70, 50), Color.Black);
             _spriteBatch.End();
         }
 
@@ -72,10 +75,12 @@ namespace PacmanMonogame.States
             var bulletTexture = _content.Load<Texture2D>("Bullet");
             _font = _content.Load<SpriteFont>("Font");
             healthTexture = _content.Load<Texture2D>("Healthbar");
-            powerUpTexture = _content.Load<Texture2D>("goldCoin");
-
+            powerUpTexture = _content.Load<Texture2D>("hearth");
+            var floortexture = _content.Load<Texture2D>("floor");
             rectangle = new Rectangle(0, 0, healthTexture.Width, healthTexture.Height);
             _powerUpManager = new PowerUpManager(powerUpTexture);
+
+            _megaManager = new MegaPowerUpManager(bulletTexture);
 
             player = new Player(_texture)
             {
@@ -88,6 +93,11 @@ namespace PacmanMonogame.States
             _enemyManager = new EnemyManager(_texture, bulletTexture, player);
             _sprites = new List<Sprite>() {
                 player,
+                new Box(floortexture)
+                {
+                    Position = new Vector2(0, 0),
+                    Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
+                },
             };
             _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
             {
@@ -122,11 +132,24 @@ namespace PacmanMonogame.States
 
             for (int i = 0; i < _sprites.Count; i++)
             {
-                if (_sprites[i].IsRemoved)
+                if (_sprites[i] is Bullet)
                 {
-                    _sprites.RemoveAt(i);
-                    i--;
+                    var bullet= (Bullet)_sprites[i];
+                    if (bullet.IsRemoved) {
+                        {
+                            _sprites.RemoveAt(i);
+                        }
+                    }
                 }
+                else
+                {
+                    if (_sprites[i].IsRemoved)
+                    {
+                        _sprites.RemoveAt(i);
+                        i--;
+                    }
+                }
+             
             }
         }
 
@@ -157,6 +180,26 @@ namespace PacmanMonogame.States
             if (player.isDead)
             {
                 _game.ChangeState(new GameOverState(_game, _graphicsDevice, _content));
+            }
+
+            var randomNumber = _random.Next(0, 100000);
+            if (randomNumber > 99500)
+            {
+
+                _powerUpManager.SpawnPowerUps().ForEach(x =>
+                {
+                    _sprites.Add(x);
+                });
+            }
+
+            var randomNumber_mega = _random.Next(0, 100000);
+            if (randomNumber_mega > 99500)
+            {
+
+                _megaManager.SpawnPowerUps().ForEach(x =>
+                {
+                    _sprites.Add(x);
+                });
             }
             PostUpdate(gameTime);
 

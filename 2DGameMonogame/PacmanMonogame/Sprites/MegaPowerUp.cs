@@ -1,5 +1,5 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
 using Sprites;
 using System;
 using System.Collections.Generic;
@@ -9,17 +9,17 @@ using System.Threading.Tasks;
 
 namespace PacmanMonogame.Sprites
 {
-    public class PowerUp : Sprite
+    public class MegaPowerUp : Sprite
     {
         public string Name { get; set; }
         public string Description { get; set; }
 
-        public float HealthUp { get; set; }
+        public float MegaGain { get; set; }
 
         private float _timer;
 
 
-        public PowerUp(Texture2D texture) : base(texture)
+        public MegaPowerUp(Texture2D texture) : base(texture)
         {
             LifeSpan = 2f;
         }
@@ -32,7 +32,7 @@ namespace PacmanMonogame.Sprites
             {
                 IsRemoved = true;
             }
- 
+
         }
 
         public override void OnCollide(Sprite sprite)
@@ -47,33 +47,23 @@ namespace PacmanMonogame.Sprites
             if (sprite is Player)
             {
                 var p = (Player)sprite;
-                if (p.Health + this.HealthUp > 100)
-                {
-                    p.Health = 100;
 
-                }
-                else
+                if(p.CooldownMega - p.ShootCounterMega   < 5)
                 {
-                    p.Health += this.HealthUp;
-                }
+
+                    p.ShootCounterMega--;
+                }            
+            
                 IsRemoved = true;
-                
+
             }
             if (sprite is Enemy)
             {
-                var enemy = (Enemy)sprite;
-                if (enemy.Health + this.HealthUp > 100)
-                {
-                    enemy.Health = 100;
-
-                }
-                else
-                {
-                    enemy.Health += this.HealthUp;
-                }
+                return;
             }
 
             IsRemoved = true;
         }
     }
+    
 }
