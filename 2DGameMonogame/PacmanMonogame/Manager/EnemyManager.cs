@@ -23,11 +23,11 @@ namespace PacmanMonogame.Manager
             _textureBullet = textureBullet;
             _player = player;
         }
-        public List<Sprite> SpawnEnemies()
+        public List<Sprite> SpawnEnemies(int number)
         {
             List<Sprite> list = new List<Sprite>();
             int i = 0;
-            while(i < 10) 
+            while(i < number) 
             {
                 var xPos = _random.Next(0, 1800);
                 var yPos = _random.Next(0, 1800);

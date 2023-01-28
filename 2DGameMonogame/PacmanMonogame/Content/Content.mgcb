@@ -56,7 +56,7 @@
 /processorParam:TextureFormat=Color
 /build:goldCoin.png
 
-#begin Health.png
+#begin Healthbar.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -66,7 +66,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Health.png
+/build:Healthbar.png
 
 #begin play.png
 /importer:TextureImporter

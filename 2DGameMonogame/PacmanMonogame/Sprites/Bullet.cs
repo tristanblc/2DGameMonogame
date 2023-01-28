@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Sprites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +27,30 @@ namespace PacmanMonogame.Sprites
                 IsRemoved = true;
             }
             Position += Direction * LinearVelocity;
+        }
+        public override void OnCollide(Sprite sprite)
+        {
+            if (sprite == this.Parent)
+                return;
+
+          
+            if (sprite is Bullet)
+                return;
+
+            if(sprite is Player)
+            {
+              var p = (Player)sprite;
+              p.Health -= 10;
+            }
+            if(sprite is Enemy)
+            {
+                var enemy = (Enemy)sprite;
+                enemy.Health -= 20;
+                if(enemy.Health < 0)
+                    enemy.IsRemoved = true;
+            }
+
+            IsRemoved = true;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace PacmanMonogame.Sprites
      
         public float Speed { get; set; }
 
-        public float Health;
+        public float Health = 100;
 
         public Rectangle rectangle;
         public bool isDead
@@ -41,6 +41,7 @@ namespace PacmanMonogame.Sprites
         {
             GetActions(sprites);
         }
+
 
         private void UpdateHealthBar(SpriteBatch spriteBatch)
         {
@@ -93,7 +94,6 @@ namespace PacmanMonogame.Sprites
                 bullet.Parent = this;
 
             sprites.Add(bullet);
-
             
         }
     }

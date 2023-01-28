@@ -25,6 +25,7 @@ namespace PacmanMonogame.States
         private Texture2D _texture;
         private Texture2D healthTexture;
         private Texture2D powerUpTexture;
+        private Rectangle rectangle;
 
         public static int ScreenWidth = 1920;
         public static int ScreenHeight = 1080;
@@ -39,7 +40,8 @@ namespace PacmanMonogame.States
         private EnemyManager _enemyManager;
         private PowerUpManager _powerUpManager;
         private Random _random;
-            
+        private int numberOfEnemies { get; set; } = 3 ;
+           
         public GameState(Jeu game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
             _game = game;
@@ -56,7 +58,7 @@ namespace PacmanMonogame.States
 
             foreach (var sprite in _sprites)
                 sprite.Draw(_spriteBatch);
-            _spriteBatch.Draw(healthTexture,healthRectangle,Color.White);
+            _spriteBatch.DrawString(_font, $"Health : {player.Health}", new Vector2(50, 30), Color.Black);
             _spriteBatch.End();
         }
 
@@ -69,8 +71,10 @@ namespace PacmanMonogame.States
 
             var bulletTexture = _content.Load<Texture2D>("Bullet");
             _font = _content.Load<SpriteFont>("Font");
-            healthTexture = _content.Load<Texture2D>("Health");
+            healthTexture = _content.Load<Texture2D>("Healthbar");
             powerUpTexture = _content.Load<Texture2D>("goldCoin");
+
+            rectangle = new Rectangle(0, 0, healthTexture.Width, healthTexture.Height);
             _powerUpManager = new PowerUpManager(powerUpTexture);
 
             player = new Player(_texture)
@@ -85,31 +89,66 @@ namespace PacmanMonogame.States
             _sprites = new List<Sprite>() {
                 player,
             };
-            _enemyManager.SpawnEnemies().ForEach(x =>
+            _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
             {
                 _sprites.Add(x);
             });
         }
 
+
+
         public override void PostUpdate(GameTime gameTime)
         {
-          
+            foreach (var spriteA in _sprites)
+            {
+                foreach (var spriteB in _sprites)
+                {
+                    if (spriteA == spriteB)
+                        continue;
+
+                    if (spriteA.Intersects(spriteB))
+                        spriteA.OnCollide(spriteB);
+                }
+            }
+
+            int count = _sprites.Count;
+            for (int i = 0; i < count; i++)
+            {
+                foreach (var child in _sprites[i].Children)
+                    _sprites.Add(child);
+
+                _sprites[i].Children.Clear();
+            }
+
+            for (int i = 0; i < _sprites.Count; i++)
+            {
+                if (_sprites[i].IsRemoved)
+                {
+                    _sprites.RemoveAt(i);
+                    i--;
+                }
+            }
         }
+
 
         public override void Update(GameTime gameTime)
         {
-            var randomNumber = _random.Next(0, 1000);
-            if (randomNumber > 998)
-            {
-                _powerUpManager.SpawnPowerUps().ForEach(x =>
-                {
-                    _sprites.Add(x);
-                });
-            }
 
             foreach (var sprite in _sprites.ToArray())
                 sprite.Update(gameTime, _sprites);
 
+            var countEnemies = 0;
+            foreach(var sprite in _sprites)
+                if(sprite is Enemy)
+                    countEnemies++;
+
+            if(countEnemies == 0) 
+            {
+                _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
+                {
+                    _sprites.Add(x);
+                });
+            }
             player.Update(gameTime,_sprites);
             PostUpdate(gameTime);
 

@@ -14,7 +14,7 @@ namespace Sprites
     {
         public float Speed { get; set; }
 
-        public float Health;
+        public float Health = 100;
 
         public Bullet Bullet;
 
@@ -77,17 +77,11 @@ namespace Sprites
             var bullet = Bullet.Clone() as Bullet;
             bullet.Direction = direction;
             bullet.Position = this.Position;
-            bullet.LinearVelocity = this.LinearVelocity * 2;
+            bullet.LinearVelocity = this.LinearVelocity *2 ;
             bullet.LifeSpan = 2f;
             bullet.Parent = this;
-
             sprites.Add(bullet);
-
         }
-
-
-
-
 
     }
 }
