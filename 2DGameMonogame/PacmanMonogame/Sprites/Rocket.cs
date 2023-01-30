@@ -9,20 +9,19 @@ using System.Threading.Tasks;
 
 namespace PacmanMonogame.Sprites
 {
-    public class Bullet : Sprite
+    public class Rocket : Sprite
     {
-
         private float _timer;
-        
-        public Bullet(Texture2D texture) : base(texture)
+        public Rocket(Texture2D texture) : base(texture)
         {
+            
         }
-
+        
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
 
             _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if(_timer > LifeSpan)
+            if (_timer > LifeSpan)
             {
                 IsRemoved = true;
             }
@@ -33,20 +32,20 @@ namespace PacmanMonogame.Sprites
             if (sprite == this.Parent)
                 return;
 
-          
+
             if (sprite is Bullet)
                 return;
 
-            if(sprite is Player)
-            { 
+            if (sprite is Player)
+            {
                 var p = (Player)sprite;
-                p.Health -= 15;
+                p.Health -= 50;
             }
-            if(sprite is Enemy)
+            if (sprite is Enemy)
             {
                 var enemy = (Enemy)sprite;
-                enemy.Health -= 20;
-                if(enemy.Health < 0)
+                enemy.Health -= 50;
+                if (enemy.Health < 0)
                     enemy.IsRemoved = true;
             }
 

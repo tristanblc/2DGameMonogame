@@ -21,6 +21,9 @@ namespace PacmanMonogame.Sprites
         protected KeyboardState currentKey;
         protected KeyboardState previousKey;
 
+        protected MouseState currentMouseState;
+       
+
 
         public float RotationVelocity = 3f;
         public float LinearVelocity = 4f;

@@ -19,15 +19,18 @@ namespace PacmanMonogame.Sprites
 
         public float Cooldown = 20;
         public float CooldownTimer = 0.25f;
- 
 
         public float CooldownMega = 5;
         public float CooldownTimerMega = 0.35f;
         public float _timer;
         public float _timers;
 
+
+        public float CooldownRocket = 5;
         public float ShootCounter = 0;
+        public float ShootRocketCounter = 0;
         public float ShootCounterMega = 0;
+
         public Rectangle rectangle;
         public bool isDead
         {
@@ -37,37 +40,32 @@ namespace PacmanMonogame.Sprites
             }
         }
 
+        public bool isSwitch { get; private set; }
 
         public Bullet Bullet;
+        public Rocket Rocket;
 
         public Player(Texture2D texture) : base(texture) 
         {
             Speed = 3f;
             Position = new Vector2(1000,1000);
+            isSwitch = false;
         
         }
-
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
             GetActions(sprites,gameTime);
         }
 
-
-        private void UpdateHealthBar(SpriteBatch spriteBatch)
-        {
-            if(Health > 0)
-            {
-                spriteBatch.Draw(_texture, rectangle, Color.White);
-            }
-
-        }
         private void GetActions(List<Sprite> sprites,GameTime gameTime)
         {
 
 
             previousKey = currentKey;
             currentKey = Keyboard.GetState();
+
+            currentMouseState = Mouse.GetState();
 
             if (currentKey.IsKeyDown(Keys.A))
             {
@@ -88,7 +86,13 @@ namespace PacmanMonogame.Sprites
                 Position -= direction * LinearVelocity;
             }
 
-            if (currentKey.IsKeyDown(Keys.T) && previousKey.IsKeyUp(Keys.T))
+
+            if(currentKey.IsKeyDown(Keys.Q) && previousKey.IsKeyUp(Keys.Q))
+            {
+                isSwitch = !isSwitch;
+            }
+            
+            if (currentKey.IsKeyDown(Keys.R) && previousKey.IsKeyUp(Keys.R))
             {
                 _timers += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -103,25 +107,50 @@ namespace PacmanMonogame.Sprites
             {
                 _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
              
-                if (ShootCounter < Cooldown )
+                if(isSwitch == false)
                 {
-                    ShootBullet(sprites);
-                    ShootCounter++;
-                }
-                else
-                {                    
-                    if(_timer > CooldownTimer)
+                    ShootRocketCounter = 0;
+                    if (ShootCounter < Cooldown)
                     {
-                        ShootCounter = 0;
-                        _timer = 0;
-                    }
 
+                        ShootBullet(sprites);
+                        ShootCounter++;
+                    }
+                    else
+                    {
+                        if (_timer > CooldownTimer)
+                        {
+                            ShootCounter = 0;
+                            _timer = 0;
+                        }
+
+                    }
                 }
-                    
-               
+                if(isSwitch == true)
+                {
+                    ShootCounter = 0;
+                    if (ShootRocketCounter < CooldownRocket)
+                    {
+
+                        ShootRocket(sprites);
+                        ShootRocketCounter++;
+                    }
+                    else
+                    {
+                        if (_timer > CooldownTimer)
+                        {
+                            ShootRocketCounter = 0;
+                            _timer = 0;
+                        }
+
+                    }
+                }
+
+
+
+
             }
         }
-
 
         public void ShootBullet(List<Sprite> sprites)
         {
@@ -132,9 +161,21 @@ namespace PacmanMonogame.Sprites
                 bullet.LinearVelocity = this.LinearVelocity *2;
                 bullet.LifeSpan = 2f;
                 bullet.Parent = this;
-
-            sprites.Add(bullet);
+                 sprites.Add(bullet);
             
+        }
+        public void ShootRocket(List<Sprite> sprites)
+        {
+            var direction = new Vector2((float)Math.Cos(_rotation), (float)Math.Sin(_rotation));
+            var rocket = Rocket.Clone() as Rocket;
+            rocket.Direction = direction;
+            rocket.Position = this.Position;
+            rocket.LinearVelocity = this.LinearVelocity * 3;
+            rocket.LifeSpan = 2f;
+            rocket.Parent = this;
+            sprites.Add(rocket);
+
+
         }
 
 

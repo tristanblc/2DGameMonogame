@@ -2,11 +2,13 @@
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PacmanMonogame.Core;
 using PacmanMonogame.Manager;
 using PacmanMonogame.Sprites;
 using Sprites;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
@@ -20,11 +22,17 @@ namespace PacmanMonogame.States
         private ContentManager _content;
         private SpriteBatch _spriteBatch;
 
+        private Camera _camera;
 
         private SpriteFont _font;
         private Texture2D _texture;
         private Texture2D healthTexture;
         private Texture2D powerUpTexture;
+        private Texture2D backgroundTexture;
+        private Texture2D bulletTexture;
+        private Texture2D floortexture;
+        private Texture2D rocketTexture;
+
         private Rectangle rectangle;
 
         public static int ScreenWidth = 1920;
@@ -56,27 +64,43 @@ namespace PacmanMonogame.States
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             _spriteBatch.Begin();
-
             foreach (var sprite in _sprites)
                 sprite.Draw(_spriteBatch);
+
             _spriteBatch.DrawString(_font, $"Health : {player.Health}", new Vector2(50, 30), Color.Black);
-            _spriteBatch.DrawString(_font, $"Ammo : {player.Cooldown  - player.ShootCounter}", new Vector2(50, 50), Color.Black);
-            _spriteBatch.DrawString(_font, $"Ammo Mega Shoot : {player.CooldownMega - player.ShootCounterMega}", new Vector2(70, 50), Color.Black);
+     
+            if (!player.isSwitch)
+            {
+                _spriteBatch.DrawString(_font, $"Ammo : {player.Cooldown - player.ShootCounter}", new Vector2(50, 50), Color.Black);
+            }                
+            else
+            {
+                _spriteBatch.DrawString(_font, $"Ammo Rocket : {player.CooldownRocket - player.ShootRocketCounter}", new Vector2(50, 50), Color.Black);
+             
+            }
+                
+
+            _spriteBatch.DrawString(_font, $"Ammo Mega Shoot : {player.CooldownMega - player.ShootCounterMega}", new Vector2(50, 70), Color.Black);
+
             _spriteBatch.End();
         }
 
         public override void LoadContent()
-
-
         {
-            _spriteBatch = new SpriteBatch(_graphicsDevice);
-            _texture = _content.Load<Texture2D>("play");
+            _camera = new Camera();
 
-            var bulletTexture = _content.Load<Texture2D>("Bullet");
+            _spriteBatch = new SpriteBatch(_graphicsDevice);
+
+
+            _texture = _content.Load<Texture2D>("play");
+            backgroundTexture = _content.Load<Texture2D>("ground");
+            bulletTexture = _content.Load<Texture2D>("Bullet");
             _font = _content.Load<SpriteFont>("Font");
             healthTexture = _content.Load<Texture2D>("Healthbar");
             powerUpTexture = _content.Load<Texture2D>("hearth");
-            var floortexture = _content.Load<Texture2D>("floor");
+            floortexture = _content.Load<Texture2D>("floor");
+            rocketTexture = _content.Load<Texture2D>("rocket");
+
             rectangle = new Rectangle(0, 0, healthTexture.Width, healthTexture.Height);
             _powerUpManager = new PowerUpManager(powerUpTexture);
 
@@ -86,7 +110,8 @@ namespace PacmanMonogame.States
             {
                 Position = new Vector2(100, 100),
                 Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
-                Bullet = new Bullet(bulletTexture)
+                Bullet = new Bullet(bulletTexture),
+                Rocket = new Rocket(rocketTexture)
 
             };
 
@@ -165,7 +190,6 @@ namespace PacmanMonogame.States
                 if(sprite is Enemy)
                     countEnemies++;
 
-            
 
             if(countEnemies == 0) 
             {
