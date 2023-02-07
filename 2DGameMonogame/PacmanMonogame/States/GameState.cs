@@ -35,8 +35,7 @@ namespace PacmanMonogame.States
 
         private Rectangle rectangle;
 
-        public static int ScreenWidth = 1920;
-        public static int ScreenHeight = 1080;
+       
 
         private Jeu _game;
         private List<Sprite> _sprites;

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PacmanMonogame;
 using PacmanMonogame.Sprites;
 using System;
 using System.Collections.Generic;
@@ -68,6 +69,16 @@ namespace Sprites
                 Position += velocity;
 
             }
+
+            if (Position.X >= Globals.ScreenWidth - 3)
+                Position.X = Globals.ScreenWidth - 5;
+            if (Position.Y < 2)
+                Position.Y = 5;
+            if (Position.X < 2)
+                Position.X = 5;
+            if (Position.Y > Globals.ScreenHeight - 3)
+                Position.Y = Globals.ScreenHeight - 5;
+
 
         }
 

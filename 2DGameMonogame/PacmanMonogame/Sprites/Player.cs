@@ -11,8 +11,8 @@ namespace PacmanMonogame.Sprites
 {
     public class Player : Sprite
     {
-       
-     
+
+
         public float Speed { get; set; }
 
         public float Health = 100;
@@ -45,20 +45,20 @@ namespace PacmanMonogame.Sprites
         public Bullet Bullet;
         public Rocket Rocket;
 
-        public Player(Texture2D texture) : base(texture) 
+        public Player(Texture2D texture) : base(texture)
         {
             Speed = 3f;
-            Position = new Vector2(1000,1000);
+            Position = new Vector2(1000, 1000);
             isSwitch = false;
-        
+
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
-            GetActions(sprites,gameTime);
+            GetActions(sprites, gameTime);
         }
 
-        private void GetActions(List<Sprite> sprites,GameTime gameTime)
+        private void GetActions(List<Sprite> sprites, GameTime gameTime)
         {
 
 
@@ -75,15 +75,42 @@ namespace PacmanMonogame.Sprites
             {
                 _rotation += MathHelper.ToRadians(RotationVelocity);
             }
+
+
             var direction = new Vector2((float)Math.Cos(MathHelper.ToRadians(180) - _rotation), -(float)Math.Sin(_rotation));
+
 
             if (currentKey.IsKeyDown(Keys.S))
             {
-                Position += direction * LinearVelocity;
+                if (Position.X > Globals.ScreenWidth- 3)
+                    Position.X = Globals.ScreenWidth - 5;
+                if (Position.Y < 2)
+                    Position.Y = 5;
+                if (Position.Y > 500)
+                    Position.Y = 200;
+                if (Position.X < 2)
+                    Position.X = 5;
+                if (Position.Y > Globals.ScreenHeight - 3)
+                    Position.Y = Globals.ScreenHeight - 5;
+                else
+                    Position += direction * LinearVelocity;
+
+
+
             }
             if (currentKey.IsKeyDown(Keys.Z))
             {
-                Position -= direction * LinearVelocity;
+                if(Position.X >= Globals.ScreenWidth - 3)
+                    Position.X = Globals.ScreenWidth - 5;
+                if (Position.Y < 2)
+                    Position.Y = 5;
+                if (Position.X < 2)
+                    Position.X = 5;
+                if (Position.Y > Globals.ScreenHeight - 3)
+                    Position.Y = Globals.ScreenHeight - 5;
+
+                else                
+                    Position -= direction * LinearVelocity;
             }
 
 
@@ -150,6 +177,14 @@ namespace PacmanMonogame.Sprites
 
 
             }
+        }
+
+
+        private void CheckLimit(Vector2 Position, bool sign, Vector2 direction)
+        {
+           
+      
+          
         }
 
         public void ShootBullet(List<Sprite> sprites)

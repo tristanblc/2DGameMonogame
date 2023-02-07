@@ -39,8 +39,8 @@ namespace PacmanMonogame.Sprites
 
             if(sprite is Player)
             { 
-                var p = (Player)sprite;
-                p.Health -= 15;
+              var p = (Player)sprite;
+              p.Health -= 15;
             }
             if(sprite is Enemy)
             {

@@ -28,7 +28,9 @@ namespace PacmanMonogame
             this.Window.Title = "Top Down Racing!";
             _graphics.PreferredBackBufferWidth = ScreenWidth;
             _graphics.PreferredBackBufferHeight = ScreenHeight;
-            _graphics.IsFullScreen = false;
+            this.Window.Title = "Shooter game";
+
+            _graphics.IsFullScreen = true;
             _graphics.ApplyChanges();
 
             IsMouseVisible = true;

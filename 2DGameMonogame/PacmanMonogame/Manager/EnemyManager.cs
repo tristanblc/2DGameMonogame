@@ -29,8 +29,8 @@ namespace PacmanMonogame.Manager
             int i = 0;
             while(i < number) 
             {
-                var xPos = _random.Next(0, 1800);
-                var yPos = _random.Next(0, 1800);
+                var xPos = _random.Next(0, (int)Globals.ScreenWidth + 1);
+                var yPos = _random.Next(0, (int)Globals.ScreenHeight + 1);
                 list.Add(new Enemy(_texture)
                 {
                     Position = new Vector2(xPos, yPos),
