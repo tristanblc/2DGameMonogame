@@ -27,7 +27,7 @@ namespace PacmanMonogame.Manager
         {
             List<Sprite> list = new List<Sprite>();
             int i = 0;
-            while(i < number) 
+            while(i < _random.Next(1,10)) 
             {
                 var xPos = _random.Next(0, (int)Globals.ScreenWidth + 1);
                 var yPos = _random.Next(0, (int)Globals.ScreenHeight + 1);
