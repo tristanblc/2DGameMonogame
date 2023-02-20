@@ -37,6 +37,8 @@ namespace PacmanMonogame.Sprites
         public Keys LeftKey;
         public Keys RightKey;
         public Keys SwitchKey;
+        public Keys SpecialKey;
+        public Keys AttackKey;
       
 
         public Rectangle rectangle;
@@ -59,8 +61,48 @@ namespace PacmanMonogame.Sprites
             Position = new Vector2(1000, 1000);
             isSwitch = false;
             service = new Service();
+            List<KeyData> keys = service.ReadSavedKeys();
+            ConvertKeys(keys);
+        }
 
+        private Keys ConvertStringToKey(KeyData key)
+        {
+            return (Keys)Enum.Parse(typeof(Keys), key.Key, true);
+        }
 
+        private void ConvertKeys(List<KeyData> keys)
+        {
+            foreach (KeyData key in keys)
+            {
+                if(key.ButtonName == "UpKeyButton")
+                {
+                   UpKey = ConvertStringToKey(key);
+                }                   
+                if (key.ButtonName == "DownKeyButton")
+                {
+                    DownKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "LeftKeyButton")
+                {
+                   LeftKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "RightKeyButton")
+                {
+                    RightKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "SpecialButton")
+                {
+                    SpecialKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "SwitchButton")
+                {
+                    SwitchKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "AttackButton")
+                {
+                    AttackKey = ConvertStringToKey(key);
+                };
+            }
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
@@ -77,11 +119,11 @@ namespace PacmanMonogame.Sprites
 
             currentMouseState = Mouse.GetState();
 
-            if (currentKey.IsKeyDown(Keys.A))
+            if (currentKey.IsKeyDown(RightKey))
             {
                 _rotation -= MathHelper.ToRadians(RotationVelocity);
             }
-            if (currentKey.IsKeyDown(Keys.E))
+            if (currentKey.IsKeyDown(LeftKey))
             {
                 _rotation += MathHelper.ToRadians(RotationVelocity);
             }
@@ -90,7 +132,7 @@ namespace PacmanMonogame.Sprites
             var direction = new Vector2((float)Math.Cos(MathHelper.ToRadians(180) - _rotation), -(float)Math.Sin(_rotation));
 
 
-            if (currentKey.IsKeyDown(Keys.S))
+            if (currentKey.IsKeyDown(DownKey))
             {
                 if (Position.X > Globals.ScreenWidth- 3)
                     Position.X = Globals.ScreenWidth - 5;
@@ -108,7 +150,7 @@ namespace PacmanMonogame.Sprites
 
 
             }
-            if (currentKey.IsKeyDown(Keys.Z))
+            if (currentKey.IsKeyDown(UpKey))
             {
                 if(Position.X >= Globals.ScreenWidth - 3)
                     Position.X = Globals.ScreenWidth - 5;
@@ -124,12 +166,12 @@ namespace PacmanMonogame.Sprites
             }
 
 
-            if(currentKey.IsKeyDown(Keys.Q) && previousKey.IsKeyUp(Keys.Q))
+            if(currentKey.IsKeyDown(SwitchKey) && previousKey.IsKeyUp(SwitchKey))
             {
                 isSwitch = !isSwitch;
             }
             
-            if (currentKey.IsKeyDown(Keys.R) && previousKey.IsKeyUp(Keys.R))
+            if (currentKey.IsKeyDown(SpecialKey) && previousKey.IsKeyUp(SpecialKey))
             {
                 _timers += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -140,7 +182,7 @@ namespace PacmanMonogame.Sprites
                 }            
             }
 
-            if (currentKey.IsKeyDown(Keys.Space) && previousKey.IsKeyUp(Keys.Space))
+            if (currentKey.IsKeyDown(AttackKey) && previousKey.IsKeyUp(AttackKey))
             {
                 _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
              

@@ -84,18 +84,32 @@ namespace PacmanMonogame.States
 
             RightKeyButton.Click += Button_RightKey_Click;
 
+
+
             var backButton = new Button(buttonTexture, _font)
             {
                 Position = new Vector2(1500, 700),
                 Text = "Back to menu",
+                Name = "BackButton"
             };
 
 
             backButton.Click += Button_backButton_Click;
 
+            var attackButton = new Button(buttonTexture, _font)
+            {
+                Position = new Vector2(1500, 400),
+                Text = "",
+                Name = "AttackButton"
+            };
+
+
+            attackButton.Click += Button_attackButton_Click;
+
+
             var saveButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1500, 200),
+                Position = new Vector2(1800, 700),
                 Text = "Save",
             };
             saveButton.Click += Button_saveButton_Click;
@@ -110,7 +124,8 @@ namespace PacmanMonogame.States
                 backButton,
                 SwitchButton,
                 SpecialButton,
-                saveButton
+                attackButton,
+                saveButton,
 
             };
           
@@ -127,7 +142,6 @@ namespace PacmanMonogame.States
 
         private void Button_UpKey_Click(object sender, EventArgs e)
         {
-
             currentButton = components[0]; 
         }
 
@@ -157,6 +171,10 @@ namespace PacmanMonogame.States
         {
             currentButton = components[5];
         }
+        private void Button_attackButton_Click(object sender, EventArgs args)
+        {
+            currentButton = components[7];
+        }
 
         private void Button_backButton_Click(object sender, EventArgs args)
         {
@@ -165,7 +183,8 @@ namespace PacmanMonogame.States
 
         private void Button_saveButton_Click(object sender, EventArgs args)
         {
-            service.SaveKeyInJson(components);            
+            service.SaveKeyInJson(components);
+            _game.ChangeState(new MenuState(_game, _graphicsDevice, _content));
         }
 
         public override void Update(GameTime gameTime)
@@ -213,7 +232,7 @@ namespace PacmanMonogame.States
             spriteBatch.DrawString(_font,"Set Down Key :", new Vector2(200,700),Color.Black);
             spriteBatch.DrawString(_font, "Set Left Key : ", new Vector2(800, 400), Color.Black);
             spriteBatch.DrawString(_font,"Set  Right Key: ", new Vector2(800,700),Color.Black);
-
+            spriteBatch.DrawString(_font, "Set  Attack Key: ", new Vector2(1300, 400), Color.Black);
 
             foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);
