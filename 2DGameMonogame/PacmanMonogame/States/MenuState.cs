@@ -24,15 +24,25 @@ namespace PacmanMonogame.States
 
             var newGameButton = new Button(buttonTexture,_font)
             {
-                Position = new Vector2(600, 400),
+                Position = new Vector2(500, 400),
                 Text = "New Game",
             };
 
             newGameButton.Click += Button_NewGame_Click;
 
+            var keyboardMenuButton = new Button(buttonTexture, _font)
+            {
+                Position = new Vector2(900, 400),
+                Text = "Change controls",
+            };
+
+            keyboardMenuButton.Click += Button_KeyboardMenuButton_Click;
+
+
+
             var quitGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1200, 400),
+                Position = new Vector2(1300, 400),
                 Text = "Quit Game",
             };
 
@@ -41,6 +51,7 @@ namespace PacmanMonogame.States
             components = new List<Button>()
             {
                 newGameButton,
+                keyboardMenuButton,
                 quitGameButton,
             };
         }
@@ -53,6 +64,11 @@ namespace PacmanMonogame.States
         private void Button_NewGame_Click(object sender, EventArgs e)
         {
             _game.ChangeState(new GameState(_game, _graphicsDevice, _content));
+        }
+
+        private void Button_KeyboardMenuButton_Click(object sender,EventArgs e)
+        {
+            _game.ChangeState(new KeyBoardMenuState(_game, _graphicsDevice, _content));
         }
 
         private void Button_Quit_Clicked(object sender, EventArgs args)

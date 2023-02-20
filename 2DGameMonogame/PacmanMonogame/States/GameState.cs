@@ -32,6 +32,8 @@ namespace PacmanMonogame.States
         private Texture2D bulletTexture;
         private Texture2D floortexture;
         private Texture2D rocketTexture;
+      
+
 
         private Rectangle rectangle;
 
@@ -100,10 +102,12 @@ namespace PacmanMonogame.States
             floortexture = _content.Load<Texture2D>("floor");
             rocketTexture = _content.Load<Texture2D>("rocket");
 
+
             rectangle = new Rectangle(0, 0, healthTexture.Width, healthTexture.Height);
             _powerUpManager = new PowerUpManager(powerUpTexture);
 
             _megaManager = new MegaPowerUpManager(bulletTexture);
+           
 
             player = new Player(_texture)
             {
@@ -115,18 +119,23 @@ namespace PacmanMonogame.States
             };
 
             _enemyManager = new EnemyManager(_texture, bulletTexture, player);
+
+            var rock = new Rock(floortexture)
+            {
+                Position = new Vector2(0, 0),
+                Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
+
+            };
             _sprites = new List<Sprite>() {
                 player,
-                new Box(floortexture)
-                {
-                    Position = new Vector2(0, 0),
-                    Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
-                },
+                rock
+               
             };
             _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
             {
                 _sprites.Add(x);
             });
+
         }
 
 

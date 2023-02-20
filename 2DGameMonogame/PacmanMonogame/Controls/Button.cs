@@ -56,6 +56,8 @@ namespace PäcmanMonogame.Controls
 
         public string Text;
 
+        public string Name;
+
         #endregion
 
         #region Methods
