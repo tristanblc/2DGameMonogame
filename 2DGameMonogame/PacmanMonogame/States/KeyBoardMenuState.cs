@@ -99,7 +99,7 @@ namespace PacmanMonogame.States
                 Text = "Save",
             };
             saveButton.Click += Button_saveButton_Click;
-
+         
 
             components = new List<Button>()
             {
@@ -113,11 +113,11 @@ namespace PacmanMonogame.States
                 saveButton
 
             };
+          
             currentKey = Keyboard.GetState();
+            service = new Service();
+            components = service.ReadSavedKeysMenu(components);
 
-            string workingDirectory = Environment.CurrentDirectory;
-
-            service = new Service(Directory.GetParent(workingDirectory).Parent.FullName);
         }
 
         public override void LoadContent()

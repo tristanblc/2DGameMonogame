@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PacmanMonogame.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace PacmanMonogame.Sprites
     public class Player : Sprite
     {
 
-
+        public IService service;
         public float Speed { get; set; }
 
         public float Health = 100;
@@ -30,6 +31,13 @@ namespace PacmanMonogame.Sprites
         public float ShootCounter = 0;
         public float ShootRocketCounter = 0;
         public float ShootCounterMega = 0;
+
+        public Keys UpKey;
+        public Keys DownKey;
+        public Keys LeftKey;
+        public Keys RightKey;
+        public Keys SwitchKey;
+      
 
         public Rectangle rectangle;
         public bool isDead
@@ -50,6 +58,8 @@ namespace PacmanMonogame.Sprites
             Speed = 3f;
             Position = new Vector2(1000, 1000);
             isSwitch = false;
+            service = new Service();
+
 
         }
 

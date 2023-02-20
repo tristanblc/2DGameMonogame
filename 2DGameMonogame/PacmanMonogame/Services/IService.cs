@@ -11,7 +11,8 @@ namespace PacmanMonogame.Services
     {
         void SaveKeyInJson(List<Button> buttons);
 
-        
+        List<KeyData> ReadSavedKeys();
 
+        List<Button> ReadSavedKeysMenu(List<Button> buttons);
     }
 }
