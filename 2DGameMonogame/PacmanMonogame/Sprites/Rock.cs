@@ -10,24 +10,16 @@ using System.Threading.Tasks;
 namespace PacmanMonogame.Sprites
 {
     public class Rock : Sprite
-    {
-
-        private float _timer;
-    
+    { 
         public Rock(Texture2D texture) : base(texture)
         {
-            LifeSpan = 5f;
+        
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
 
-            _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if (_timer > LifeSpan)
-            {
-                IsRemoved = true;
-            }
-            Position += Direction * LinearVelocity;
+
         }
 
         public override void OnCollide(Sprite sprite)

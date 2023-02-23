@@ -49,6 +49,7 @@ namespace PacmanMonogame.States
         private EnemyManager _enemyManager;
         private PowerUpManager _powerUpManager;
         private MegaPowerUpManager _megaManager;
+        private WallManager _wallManager;
         private Random _random;
         private int numberOfEnemies { get; set; } = 3 ;
            
@@ -59,12 +60,15 @@ namespace PacmanMonogame.States
             _content = content;
             _random = new Random();
             _game = game;
+
            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+      
             _spriteBatch.Begin();
+            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth,(int)Globals.ScreenHeight), Color.White);
             foreach (var sprite in _sprites)
                 sprite.Draw(_spriteBatch);
 
@@ -94,7 +98,7 @@ namespace PacmanMonogame.States
 
 
             _texture = _content.Load<Texture2D>("play");
-            backgroundTexture = _content.Load<Texture2D>("ground");
+            backgroundTexture = _content.Load<Texture2D>("Towel");
             bulletTexture = _content.Load<Texture2D>("Bullet");
             _font = _content.Load<SpriteFont>("Font");
             healthTexture = _content.Load<Texture2D>("Healthbar");
@@ -102,7 +106,7 @@ namespace PacmanMonogame.States
             floortexture = _content.Load<Texture2D>("floor");
             rocketTexture = _content.Load<Texture2D>("rocket");
 
-
+            
             rectangle = new Rectangle(0, 0, healthTexture.Width, healthTexture.Height);
             _powerUpManager = new PowerUpManager(powerUpTexture);
 
@@ -120,6 +124,9 @@ namespace PacmanMonogame.States
 
             _enemyManager = new EnemyManager(_texture, bulletTexture, player);
 
+            _wallManager = new WallManager(floortexture);
+
+
             var rock = new Rock(floortexture)
             {
                 Position = new Vector2(0, 0),
@@ -128,14 +135,14 @@ namespace PacmanMonogame.States
             };
             _sprites = new List<Sprite>() {
                 player,
-                rock
-               
+                rock               
             };
             _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
             {
                 _sprites.Add(x);
             });
-
+            _wallManager.SpawnWall().ForEach( x => { _sprites.Add(x); });
+             
         }
 
 

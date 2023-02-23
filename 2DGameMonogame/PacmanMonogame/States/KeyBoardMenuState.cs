@@ -224,7 +224,8 @@ namespace PacmanMonogame.States
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
-
+            var backgroundTexture = _content.Load<Texture2D>("Towel");
+            spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth, (int)Globals.ScreenHeight), Color.White);
 
             spriteBatch.DrawString(_font, "Set switch key :",new Vector2(200, 200), Color.Black);
             spriteBatch.DrawString(_font, "Set Special Key :", new Vector2(800, 200), Color.Black);
