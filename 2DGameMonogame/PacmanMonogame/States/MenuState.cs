@@ -15,11 +15,13 @@ namespace PacmanMonogame.States
     public class MenuState : State
     {
         private List<Button> components;
+        private Texture2D shootertexture;
         private SpriteFont _font;
         public MenuState(Jeu game, GraphicsDevice graphicsDevice, ContentManager content)
            : base(game, graphicsDevice, content)
         {
             var buttonTexture = _content.Load<Texture2D>("Button");
+            shootertexture = _content.Load<Texture2D>("shooterpresentation");
             _font = _content.Load<SpriteFont>("Font");
 
             var newGameButton = new Button(buttonTexture,_font)
@@ -91,8 +93,8 @@ namespace PacmanMonogame.States
             spriteBatch.Begin();
             var backgroundTexture = _content.Load<Texture2D>("Towel");
             spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth, (int)Globals.ScreenHeight), Color.White);
-            spriteBatch.DrawString(_font, "Shooter game", new Vector2(850, 200), Color.Black);
 
+            spriteBatch.Draw(shootertexture, new Vector2(600,100), Color.White);
             foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);
 

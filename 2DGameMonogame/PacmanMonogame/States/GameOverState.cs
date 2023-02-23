@@ -14,9 +14,11 @@ namespace PacmanMonogame.States
     {
         private List<Button> components;
         private SpriteFont _font;
+        private Texture2D _texture;
         public GameOverState(Jeu game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
             var buttonTexture = _content.Load<Texture2D>("Button");
+            _texture = _content.Load<Texture2D>("gameover");
             _font = _content.Load<SpriteFont>("Font");
 
             var newGameButton = new Button(buttonTexture, _font)
@@ -87,7 +89,9 @@ namespace PacmanMonogame.States
             spriteBatch.Begin();
             var backgroundTexture = _content.Load<Texture2D>("Towel");
             spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth, (int)Globals.ScreenHeight), Color.White);
-            spriteBatch.DrawString(_font, "Game over", new Vector2(850, 200), Color.Red);
+ 
+            spriteBatch.Draw(_texture, new Vector2(650, 100), Color.White);
+
 
             foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);

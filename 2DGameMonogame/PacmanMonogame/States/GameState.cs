@@ -135,11 +135,11 @@ namespace PacmanMonogame.States
             _powerUpManager = new PowerUpManager(powerUpTexture);
 
             _megaManager = new MegaPowerUpManager(bulletTexture);
-           
+
 
             player = new Player(_texture)
             {
-                Position = new Vector2(100, 100),
+                Position = new Vector2(100, 600),
                 Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
                 Bullet = new Bullet(bulletTexture),
                 Rocket = new Rocket(rocketTexture)
@@ -151,15 +151,15 @@ namespace PacmanMonogame.States
             _wallManager = new WallManager(floortexture);
 
 
-            var rock = new Rock(floortexture)
-            {
-                Position = new Vector2(0, 0),
-                Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
+            //var rock = new Rock(floortexture)
+            //{
+            //    Position = new Vector2(0, 0),
+            //    Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
 
-            };
+            //};
             _sprites = new List<Sprite>() {
                 player,
-                rock               
+                //rock               
             };
             _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
             {
