@@ -11,23 +11,22 @@ namespace PacmanMonogame.Sprites
 {
     public class Rock : Sprite
     {
-
         private float _timer;
-    
+
         public Rock(Texture2D texture) : base(texture)
         {
-            LifeSpan = 5f;
+            LifeSpan = 1.80f;
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
-
             _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
             if (_timer > LifeSpan)
             {
                 IsRemoved = true;
             }
             Position += Direction * LinearVelocity;
+
         }
 
         public override void OnCollide(Sprite sprite)
@@ -36,54 +35,27 @@ namespace PacmanMonogame.Sprites
                 return;
 
 
-            if (sprite is Bullet)
-                return;
-
-            if (sprite is Player)
+            if (sprite is MegaPowerUp)
             {
-                var p = (Player)sprite;
-                if(p.Position == this.Position)
-                {
-                    if (p.Position.X >= Globals.ScreenWidth - 3)
-                        p.Position.Y++;
-                    if (Position.Y < 2)
-                        p.Position.Y = 5;
-                    if (Position.X < 2)
-                        p.Position.X = 5;
-                    if (Position.Y > Globals.ScreenHeight - 3)
-                        p.Position.X++;
-                 
-                }
-                    
-                
-
+                var mega = sprite as MegaPowerUp;
+                mega.IsRemoved = true;
             }
-            if (sprite is Enemy)
+             
+            if(sprite is Enemy)
             {
-                var p = (Enemy)sprite;
-                if (p.Position == this.Position)
-                {
-                    if (p.Position.X >= Globals.ScreenWidth - 3)
-                        p.Position.Y++;
-                    if (Position.Y < 2)
-                        p.Position.Y = 5;
-                    if (Position.X < 2)
-                        p.Position.X = 5;
-                    if (Position.Y > Globals.ScreenHeight - 3)
-                        p.Position.X++;
-
-                }
-                return;
+                Enemy enemy = sprite as Enemy;
+                enemy.IsRemoved = true;
             }
+         
             if(sprite is Bullet)
             {
                 var bullet = sprite as Bullet;
                 bullet.IsRemoved = true;
             }
-              
-
-
             IsRemoved = true;
+
+
+
         }
     }
 }
