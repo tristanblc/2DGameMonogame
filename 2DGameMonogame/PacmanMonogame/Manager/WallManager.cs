@@ -24,14 +24,13 @@ namespace PacmanMonogame.Manager
         {
             List<Sprite> list = new List<Sprite>();
             int i = 0;
-            while (i < 4)
+            while (i < 2)
             {
                 var xPos = _random.Next(0, (int)Globals.ScreenWidth + 1);
                 var yPos = _random.Next(0, (int)Globals.ScreenHeight + 1);
-                list.Add(new PowerUp(_texture)
+                list.Add(new Rock(_texture)
                 {
                     Position = new Vector2(xPos, yPos),
-                    HealthUp = 25
                 }
                 );
                 i++;

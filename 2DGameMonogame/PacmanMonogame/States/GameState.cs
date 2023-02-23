@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace PacmanMonogame.States
 {
@@ -73,6 +74,10 @@ namespace PacmanMonogame.States
             foreach (var sprite in _sprites)
                 sprite.Draw(_spriteBatch);
 
+            var t = new Texture2D(_graphicsDevice, 1, 1);
+            t.SetData(new[] { Color.White });
+            _spriteBatch.Draw(t, new Rectangle(20, 20, 150, 100), Color.LightBlue);
+
 
             if (player.Health > 1)
             {
@@ -127,7 +132,7 @@ namespace PacmanMonogame.States
             _font = _content.Load<SpriteFont>("Font");
             healthTexture = _content.Load<Texture2D>("Healthbar");
             powerUpTexture = _content.Load<Texture2D>("hearth");
-            floortexture = _content.Load<Texture2D>("floor");
+            floortexture = _content.Load<Texture2D>("box");
             rocketTexture = _content.Load<Texture2D>("rocket");
 
             
@@ -151,21 +156,21 @@ namespace PacmanMonogame.States
             _wallManager = new WallManager(floortexture);
 
 
-            //var rock = new Rock(floortexture)
-            //{
-            //    Position = new Vector2(0, 0),
-            //    Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
+            var rock = new Rock(floortexture)
+            {
+                Position = new Vector2(0, 0),
+                Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
 
-            //};
+            };
             _sprites = new List<Sprite>() {
                 player,
-                //rock               
+                rock               
             };
             _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
             {
                 _sprites.Add(x);
             });
-            //_wallManager.SpawnWall().ForEach( x => { _sprites.Add(x); });
+            _wallManager.SpawnWall().ForEach( x => { _sprites.Add(x); });
              
         }
 
@@ -225,17 +230,21 @@ namespace PacmanMonogame.States
                 sprite.Update(gameTime, _sprites);
 
             var countEnemies = 0;
+            var countWall = 0;
             foreach(var sprite in _sprites)
-                if(sprite is Enemy)
+            {
+                if (sprite is Enemy)
                     countEnemies++;
-
-
+                if (sprite is Rock)
+                    countWall++;
+            }
+               
+               
+              
             if(countEnemies == 0) 
             {
-                _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
-                {
-                    _sprites.Add(x);
-                });
+                _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>{ _sprites.Add(x);  });
+             
             }
             player.Update(gameTime,_sprites);
 
@@ -243,6 +252,15 @@ namespace PacmanMonogame.States
             if (player.isDead)
             {
                 _game.ChangeState(new GameOverState(_game, _graphicsDevice, _content));
+            }
+
+
+            var randomNumberWall = _random.Next(0, 100000);
+            if (randomNumberWall > 99500 && countWall == 0)
+            { 
+
+
+                _wallManager.SpawnWall().ForEach(x => { _sprites.Add(x); });
             }
 
             var randomNumber = _random.Next(0, 100000);
