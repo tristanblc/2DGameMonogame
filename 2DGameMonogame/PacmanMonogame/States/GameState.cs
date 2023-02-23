@@ -69,23 +69,47 @@ namespace PacmanMonogame.States
       
             _spriteBatch.Begin();
             _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth,(int)Globals.ScreenHeight), Color.White);
+            
             foreach (var sprite in _sprites)
                 sprite.Draw(_spriteBatch);
 
-            _spriteBatch.DrawString(_font, $"Health : {player.Health}", new Vector2(50, 30), Color.Black);
-     
+
+            if (player.Health > 1)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(50, 20, 30, 30), Color.White);
+            }
+            if (player.Health > 25)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(70, 20, 30, 30), Color.White);
+            }
+            if (player.Health > 50)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(90, 20, 30, 30), Color.White);
+            }
+            if (player.Health > 75)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(110, 20, 30, 30), Color.White);
+            }
+            if (player.Health == 100)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(130, 20, 30, 30), Color.White);
+            }
             if (!player.isSwitch)
             {
-                _spriteBatch.DrawString(_font, $"Ammo : {player.Cooldown - player.ShootCounter}", new Vector2(50, 50), Color.Black);
+                _spriteBatch.Draw(bulletTexture, new Rectangle(50, 50, 30, 15), Color.White);
+                _spriteBatch.DrawString(_font, $"{player.Cooldown - player.ShootCounter}", new Vector2(100, 50), Color.Black);
             }                
             else
             {
-                _spriteBatch.DrawString(_font, $"Ammo Rocket : {player.CooldownRocket - player.ShootRocketCounter}", new Vector2(50, 50), Color.Black);
-             
-            }
-                
+                _spriteBatch.Draw(rocketTexture, new Rectangle(50, 50, 30, 25), Color.White);
+                _spriteBatch.DrawString(_font, $"{player.CooldownRocket - player.ShootRocketCounter}", new Vector2(100, 50), Color.Black);
 
-            _spriteBatch.DrawString(_font, $"Ammo Mega Shoot : {player.CooldownMega - player.ShootCounterMega}", new Vector2(50, 70), Color.Black);
+            }
+
+            _spriteBatch.DrawString(_font, $"Mega", new Vector2(50, 70), Color.Black);
+
+            _spriteBatch.Draw(bulletTexture, new Rectangle(100, 70, 30, 15), Color.White);
+            _spriteBatch.DrawString(_font, $" {player.CooldownMega - player.ShootCounterMega}", new Vector2(140, 70), Color.Black);
 
             _spriteBatch.End();
         }
@@ -141,7 +165,7 @@ namespace PacmanMonogame.States
             {
                 _sprites.Add(x);
             });
-            _wallManager.SpawnWall().ForEach( x => { _sprites.Add(x); });
+            //_wallManager.SpawnWall().ForEach( x => { _sprites.Add(x); });
              
         }
 
