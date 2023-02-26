@@ -4,6 +4,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using PacmanMonogame.Core;
 using PacmanMonogame.Manager;
+using PacmanMonogame.Other;
+using PacmanMonogame.Services;
 using PacmanMonogame.Sprites;
 using Sprites;
 using System;
@@ -33,12 +35,10 @@ namespace PacmanMonogame.States
         private Texture2D bulletTexture;
         private Texture2D floortexture;
         private Texture2D rocketTexture;
-      
+        private IService service;
 
 
-        private Rectangle rectangle;
-
-       
+        private Rectangle rectangle;      
 
         private Jeu _game;
         private List<Sprite> _sprites;
@@ -53,6 +53,8 @@ namespace PacmanMonogame.States
         private WallManager _wallManager;
         private Random _random;
         private int numberOfEnemies { get; set; } = 3 ;
+
+        private int enenykilled;
            
         public GameState(Jeu game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
@@ -61,6 +63,9 @@ namespace PacmanMonogame.States
             _content = content;
             _random = new Random();
             _game = game;
+
+            service = new Service();
+
 
            
         }
@@ -239,7 +244,6 @@ namespace PacmanMonogame.States
                     countWall++;
             }
                
-               
               
             if(countEnemies == 0) 
             {
@@ -251,6 +255,28 @@ namespace PacmanMonogame.States
 
             if (player.isDead)
             {
+                var lastScore = service.ReadSave().score;
+
+                float newScore = (float)(10 * GlobalsStats.enemyKilled + 5 * GlobalsStats.attackKeyPressed - 4 * GlobalsStats.powerUpUsed);
+
+                if (lastScore < newScore)
+                {
+                    SaveGame save = new SaveGame();
+                    save.score = newScore;
+                    save.attackKeyPressed = GlobalsStats.attackKeyPressed;
+                    save.upKeyPressed = GlobalsStats.upKeyPressed;
+                    save.powerUpUsed = GlobalsStats.powerUpUsed;
+                    save.boxKilled = GlobalsStats.boxKilled;
+                    save.enemyKilled = GlobalsStats.enemyKilled;
+                    service.SaveStats(save);
+                }
+
+                GlobalsStats.attackKeyPressed = 0;
+                GlobalsStats.enemyKilled = 0;
+                GlobalsStats.boxKilled = 0;
+                GlobalsStats.upKeyPressed = 0;
+                GlobalsStats.powerUpUsed = 0;
+
                 _game.ChangeState(new GameOverState(_game, _graphicsDevice, _content));
             }
 

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using PacmanMonogame.Other;
 using PacmanMonogame.Services;
 using System;
 using System.Collections.Generic;
@@ -31,6 +32,9 @@ namespace PacmanMonogame.Sprites
         public float ShootCounter = 0;
         public float ShootRocketCounter = 0;
         public float ShootCounterMega = 0;
+
+
+        public float HighScoreShoot;
 
         public Keys UpKey;
         public Keys DownKey;
@@ -163,6 +167,8 @@ namespace PacmanMonogame.Sprites
 
                 else                
                     Position -= direction * LinearVelocity;
+
+                GlobalsStats.upKeyPressed++;
             }
 
 
@@ -194,6 +200,7 @@ namespace PacmanMonogame.Sprites
 
                         ShootBullet(sprites);
                         ShootCounter++;
+                        GlobalsStats.attackKeyPressed++;
                     }
                     else
                     {
@@ -213,6 +220,7 @@ namespace PacmanMonogame.Sprites
 
                         ShootRocket(sprites);
                         ShootRocketCounter++;
+                        GlobalsStats.attackKeyPressed++;
                     }
                     else
                     {

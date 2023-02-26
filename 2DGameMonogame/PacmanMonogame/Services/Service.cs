@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PacmanMonogame.Services
 {
@@ -23,6 +24,21 @@ namespace PacmanMonogame.Services
                 Directory.CreateDirectory(path);
 
             _path = path;
+        }
+
+        public SaveGame ReadSave()
+        {
+            var name = $"save.json";
+            SaveGame saved = new SaveGame();
+            if (File.Exists(Path.Join(_path, name)))
+            {
+                using (StreamReader r = new StreamReader(Path.Join(_path, name)))
+                {
+                    string json = r.ReadToEnd();
+                    saved = JsonConvert.DeserializeObject<SaveGame>(json);
+                }
+            }
+            return saved;
         }
 
         public List<KeyData> ReadSavedKeys()
@@ -87,6 +103,20 @@ namespace PacmanMonogame.Services
             File.WriteAllText(Path.Join(_path,name),json);
           
 
+        }
+
+        public void SaveStats(SaveGame savedGame)
+        {
+            string json = JsonConvert.SerializeObject(savedGame);
+
+            var name = $"save.json";
+
+            if (!File.Exists(Path.Join(_path, name)))
+                File.Create(Path.Join(_path, name)).Close();
+
+
+
+            File.WriteAllText(Path.Join(_path, name), json);
         }
     }
 }

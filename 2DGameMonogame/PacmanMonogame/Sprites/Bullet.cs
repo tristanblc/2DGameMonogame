@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PacmanMonogame.Other;
 using Sprites;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,11 @@ namespace PacmanMonogame.Sprites
                 var enemy = (Enemy)sprite;
                 enemy.Health -= 20;
                 if(enemy.Health < 0)
+                {
                     enemy.IsRemoved = true;
+                    GlobalsStats.enemyKilled++;
+                }
+                    
             }
 
             IsRemoved = true;

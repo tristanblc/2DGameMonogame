@@ -23,7 +23,7 @@ namespace PacmanMonogame.States
 
             var newGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(600, 400),
+                Position = new Vector2(500, 400),
                 Text = "New Game",
             };
 
@@ -31,7 +31,7 @@ namespace PacmanMonogame.States
 
             var menuGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1200, 400),
+                Position = new Vector2(900, 400),
                 Text = "Go to Menu",
             };
 
@@ -40,7 +40,7 @@ namespace PacmanMonogame.States
 
             var exitGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1200, 400),
+                Position = new Vector2(1300, 400),
                 Text = "Exit",
             };
 
@@ -91,6 +91,7 @@ namespace PacmanMonogame.States
             spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth, (int)Globals.ScreenHeight), Color.White);
  
             spriteBatch.Draw(_texture, new Vector2(650, 100), Color.White);
+
 
 
             foreach (var component in components)

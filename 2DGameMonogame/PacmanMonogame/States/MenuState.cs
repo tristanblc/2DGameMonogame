@@ -50,17 +50,35 @@ namespace PacmanMonogame.States
 
             quitGameButton.Click += Button_Quit_Clicked;
 
+
+
+
+            var highButton = new Button(buttonTexture, _font)
+            {
+                Position = new Vector2(900, 700),
+                Text = "High Score",
+            };
+
+            highButton.Click += Button_HighButton_Click;
             components = new List<Button>()
             {
                 newGameButton,
                 keyboardMenuButton,
                 quitGameButton,
+                highButton
             };
         }
+
+ 
 
         public override void LoadContent()
         {
            
+        }
+
+        private void Button_HighButton_Click(object sender, EventArgs e)
+        {
+            _game.ChangeState(new HighScoreState(_game, _graphicsDevice, _content));
         }
 
         private void Button_NewGame_Click(object sender, EventArgs e)
