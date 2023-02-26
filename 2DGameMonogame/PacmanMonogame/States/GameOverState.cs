@@ -93,6 +93,7 @@ namespace PacmanMonogame.States
             spriteBatch.Draw(_texture, new Vector2(650, 100), Color.White);
 
 
+
             foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);
 

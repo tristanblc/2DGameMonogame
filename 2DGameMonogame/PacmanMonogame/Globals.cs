@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,6 @@ namespace PacmanMonogame
    public static class Globals
     {
         public static float ScreenWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-        public static float ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-       
+        public static float ScreenHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;  
     }
 }

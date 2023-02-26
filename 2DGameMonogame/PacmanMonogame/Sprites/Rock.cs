@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PacmanMonogame.Other;
 using Sprites;
 using System;
 using System.Collections.Generic;
@@ -38,18 +39,21 @@ namespace PacmanMonogame.Sprites
             if (sprite is MegaPowerUp)
             {
                 var mega = sprite as MegaPowerUp;
+                GlobalsStats.boxKilled++;
                 mega.IsRemoved = true;
             }
              
             if(sprite is Enemy)
             {
                 Enemy enemy = sprite as Enemy;
+                GlobalsStats.boxKilled++;
                 enemy.IsRemoved = true;
             }
          
             if(sprite is Bullet)
             {
                 var bullet = sprite as Bullet;
+                GlobalsStats.boxKilled++;
                 bullet.IsRemoved = true;
             }
             IsRemoved = true;
