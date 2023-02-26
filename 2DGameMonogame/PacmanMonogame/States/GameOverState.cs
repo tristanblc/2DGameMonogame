@@ -23,7 +23,7 @@ namespace PacmanMonogame.States
 
             var newGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(600, 400),
+                Position = new Vector2(500, 400),
                 Text = "New Game",
             };
 
@@ -31,7 +31,7 @@ namespace PacmanMonogame.States
 
             var menuGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1200, 400),
+                Position = new Vector2(900, 400),
                 Text = "Go to Menu",
             };
 
@@ -40,7 +40,7 @@ namespace PacmanMonogame.States
 
             var exitGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1200, 400),
+                Position = new Vector2(1300, 400),
                 Text = "Exit",
             };
 
