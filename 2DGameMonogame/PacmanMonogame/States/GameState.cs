@@ -63,7 +63,9 @@ namespace PacmanMonogame.States
             _content = content;
             _random = new Random();
             _game = game;
+
             service = new Service();
+
 
            
         }
@@ -241,8 +243,6 @@ namespace PacmanMonogame.States
                 if (sprite is Rock)
                     countWall++;
             }
-            
-
                
               
             if(countEnemies == 0) 

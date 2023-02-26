@@ -39,13 +39,16 @@ namespace PacmanMonogame.Sprites
             if (sprite is MegaPowerUp)
             {
                 var mega = sprite as MegaPowerUp;
+
                 GlobalsStats.boxKilled++;
+
                 mega.IsRemoved = true;
             }
              
             if(sprite is Enemy)
             {
                 Enemy enemy = sprite as Enemy;
+
                 GlobalsStats.boxKilled++;
                 enemy.IsRemoved = true;
             }
