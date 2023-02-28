@@ -57,8 +57,8 @@ jobs:
 
     env:
       Solution_Name: '2DGameMonogame\2DGameMonogame.sln'        # Replace with your solution name, i.e. MyWpfApp.sln.
-      Wap_Project_Directory: '2DGameMonogame.Package' # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
-      Wap_Project_Path: '2DGameMonogame.Package\2DGameMonogame.Packages.wapproj'  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
+      Wap_Project_Directory: '2DGameMonogame\2DGameMonogame.Package\' # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      Wap_Project_Path: '2DGameMonogame\2DGameMonogame.Package\2DGameMonogame.Packages.wapproj'  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
     - name: Checkout
@@ -92,6 +92,13 @@ jobs:
         Appx_Bundle_Platforms: x86|x64
         Appx_Package_Build_Mode: StoreUpload
         Configuration: ${{ matrix.configuration }}
+        
+     # Decode the base 64 encoded pfx and save the Signing_Certificate
+    - name: Decode the pfx
+      run: |
+        $pfx_cert_byte = [System.Convert]::FromBase64String("${{ secrets.Base64_Encoded_Pfx }}")
+        $certificatePath = Join-Path -Path $env:Wap_Project_Directory -ChildPath GitHubActionsWorkflow.pfx
+        [IO.File]::WriteAllBytes("$certificatePath", $pfx_cert_byte)
 
     # Remove the pfx
     - name: Remove the pfx
