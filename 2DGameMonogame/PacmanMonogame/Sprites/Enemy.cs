@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using PacmanMonogame;
 using PacmanMonogame.Sprites;
 using System;
@@ -28,9 +30,13 @@ namespace Sprites
                 return Health <= 0;
             }
         }
-        public Enemy(Texture2D texture) : base(texture)
+
+        private SoundEffect _shootSound;
+        public Enemy(Texture2D texture, SoundEffect shootSong) : base(texture)
         {
             Random = new Random();
+            _shootSound = shootSong;
+          
         }
 
         public Sprite SetFollowTarget(Sprite followTarget, float followDistance)
@@ -92,6 +98,7 @@ namespace Sprites
             bullet.LifeSpan = 2f;
             bullet.Parent = this;
             sprites.Add(bullet);
+            _shootSound.Play();
         }
 
     }

@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using PacmanMonogame.Core;
 using PacmanMonogame.Manager;
 using PacmanMonogame.Other;
@@ -145,18 +147,18 @@ namespace PacmanMonogame.States
             _powerUpManager = new PowerUpManager(powerUpTexture);
 
             _megaManager = new MegaPowerUpManager(bulletTexture);
-
-
-            player = new Player(_texture)
+            var hitSong = _content.Load<SoundEffect>("hit");
+            var shootSong = _content.Load<SoundEffect>("shoot");
+;            player = new Player(_texture,shootSong)
             {
                 Position = new Vector2(100, 600),
                 Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
-                Bullet = new Bullet(bulletTexture),
+                Bullet = new Bullet(bulletTexture,hitSong),
                 Rocket = new Rocket(rocketTexture)
 
             };
 
-            _enemyManager = new EnemyManager(_texture, bulletTexture, player);
+            _enemyManager = new EnemyManager(_texture, bulletTexture, player,_content);
 
             _wallManager = new WallManager(floortexture);
 
@@ -234,6 +236,8 @@ namespace PacmanMonogame.States
             foreach (var sprite in _sprites.ToArray())
                 sprite.Update(gameTime, _sprites);
 
+         
+
             var countEnemies = 0;
             var countWall = 0;
             foreach(var sprite in _sprites)
@@ -280,12 +284,9 @@ namespace PacmanMonogame.States
                 _game.ChangeState(new GameOverState(_game, _graphicsDevice, _content));
             }
 
-
             var randomNumberWall = _random.Next(0, 100000);
             if (randomNumberWall > 99500 && countWall == 0)
             { 
-
-
                 _wallManager.SpawnWall().ForEach(x => { _sprites.Add(x); });
             }
 

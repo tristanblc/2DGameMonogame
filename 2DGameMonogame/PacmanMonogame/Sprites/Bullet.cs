@@ -1,5 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
+
 using PacmanMonogame.Other;
 using Sprites;
 using System;
@@ -14,9 +17,11 @@ namespace PacmanMonogame.Sprites
     {
 
         private float _timer;
-        
-        public Bullet(Texture2D texture) : base(texture)
+        private SoundEffect _hitSong;
+
+        public Bullet(Texture2D texture, SoundEffect hitSong) : base(texture)
         {
+            _hitSong = hitSong;
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
@@ -52,6 +57,9 @@ namespace PacmanMonogame.Sprites
                     enemy.IsRemoved = true;
                     GlobalsStats.enemyKilled++;
                 }
+
+                _hitSong.Play();    
+
                     
             }
 

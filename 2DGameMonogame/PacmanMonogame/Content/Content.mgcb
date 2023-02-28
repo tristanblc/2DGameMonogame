@@ -128,6 +128,12 @@
 /processorParam:TextureFormat=Color
 /build:hearth.png
 
+#begin hit.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:hit.wav
+
 #begin play.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -151,6 +157,12 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:rocket.png
+
+#begin shoot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:shoot.wav
 
 #begin shooterpresentation.png
 /importer:TextureImporter
