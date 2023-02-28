@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Media;
+
 using PacmanMonogame.Other;
 using Sprites;
 using System;
@@ -56,7 +57,9 @@ namespace PacmanMonogame.Sprites
                     enemy.IsRemoved = true;
                     GlobalsStats.enemyKilled++;
                 }
+
                 _hitSong.Play();    
+
                     
             }
 
