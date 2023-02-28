@@ -57,7 +57,7 @@ jobs:
 
     env:
       Solution_Name: '2DGameMonogame\2DGameMonogame.sln'        # Replace with your solution name, i.e. MyWpfApp.sln.
-      Wap_Project_Directory: '2DGameMonogame.Package\' # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
+      Wap_Project_Directory: '2DGameMonogame.Package' # Replace with the Wap project directory relative to the solution, i.e. MyWpfApp.Package.
       Wap_Project_Path: '2DGameMonogame.Package\2DGameMonogame.Packages.wapproj'  # Replace with the path to your Wap project, i.e. MyWpf.App.Package\MyWpfApp.Package.wapproj.
 
     steps:
