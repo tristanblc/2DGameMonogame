@@ -3,9 +3,12 @@ name: .NET Core Desktop
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - '*'
   pull_request:
     branches: [ "main" ]
-
+    tags:
+       - '*test'
 env:
   PROJECT_PATH: 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj
   
