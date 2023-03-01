@@ -38,3 +38,9 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           pattern:  2DGameMonogame/bin/Release/net6.0/publish/*.exe
           release-url: ${{ steps.create_release.outputs.upload_url }}
+          
+permissions:
+  id-token: write
+  contents: read
+  issues: write
+  pull-requests: write
