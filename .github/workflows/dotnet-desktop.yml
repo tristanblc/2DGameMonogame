@@ -31,8 +31,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name:  2DGameMonogame
-          release_name: 2DGameMonogame_${{ github.run_attempt }}
+          tag_name:  ${{ github.run_number }}_${{ github.run_attempt }}
+          release_name: ${{ github.run_number }}_${{ github.run_attempt }}
           
           
 
