@@ -1,8 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Media;
-
 using PacmanMonogame.Other;
 using Sprites;
 using System;
@@ -13,57 +10,59 @@ using System.Threading.Tasks;
 
 namespace PacmanMonogame.Sprites
 {
-    public class Bullet : Sprite
+    public class Rock : Sprite
     {
-
         private float _timer;
-        private SoundEffect _hitSong;
 
-        public Bullet(Texture2D texture, SoundEffect hitSong) : base(texture)
+        public Rock(Texture2D texture) : base(texture)
         {
-            _hitSong = hitSong;
+            LifeSpan = 1.80f;
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
         {
-
             _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
-            if(_timer > LifeSpan)
+            if (_timer > LifeSpan)
             {
                 IsRemoved = true;
             }
             Position += Direction * LinearVelocity;
+
         }
+
         public override void OnCollide(Sprite sprite)
         {
             if (sprite == this.Parent)
                 return;
 
-          
-            if (sprite is Bullet)
-                return;
 
-            if(sprite is Player)
-            { 
-              var p = (Player)sprite;
-              p.Health -= 15;
+            if (sprite is MegaPowerUp)
+            {
+                var mega = sprite as MegaPowerUp;
+
+                GlobalsStats.boxKilled++;
+
+                mega.IsRemoved = true;
             }
+             
             if(sprite is Enemy)
             {
-                var enemy = (Enemy)sprite;
-                enemy.Health -= 20;
-                if(enemy.Health < 0)
-                {
-                    enemy.IsRemoved = true;
-                    GlobalsStats.enemyKilled++;
-                }
+                Enemy enemy = sprite as Enemy;
 
-                _hitSong.Play();    
-
-                    
+                GlobalsStats.boxKilled++;
+                enemy.IsRemoved = true;
             }
-
+         
+            if(sprite is Bullet)
+            {
+                var bullet = sprite as Bullet;
+                GlobalsStats.boxKilled++;
+                bullet.IsRemoved = true;
+            }
             IsRemoved = true;
+
+
+
         }
     }
 }

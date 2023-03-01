@@ -1,17 +1,25 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+
+using PacmanMonogame.Other;
+using PacmanMonogame.Services;
+using PacmanMonogame.States;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PacmanMonogame.Sprites
 {
     public class Player : Sprite
     {
 
+        public IService service;
 
         public float Speed { get; set; }
 
@@ -31,6 +39,18 @@ namespace PacmanMonogame.Sprites
         public float ShootRocketCounter = 0;
         public float ShootCounterMega = 0;
 
+
+        public float HighScoreShoot;
+
+        public Keys UpKey;
+        public Keys DownKey;
+        public Keys LeftKey;
+        public Keys RightKey;
+        public Keys SwitchKey;
+        public Keys SpecialKey;
+        public Keys AttackKey;
+      
+
         public Rectangle rectangle;
         public bool isDead
         {
@@ -45,12 +65,57 @@ namespace PacmanMonogame.Sprites
         public Bullet Bullet;
         public Rocket Rocket;
 
-        public Player(Texture2D texture) : base(texture)
+        private  SoundEffect _rifleHitSound;
+
+        public Player(Texture2D texture, SoundEffect rifleHitSound) : base(texture)
         {
             Speed = 3f;
             Position = new Vector2(1000, 1000);
             isSwitch = false;
+            service = new Service();
+            _rifleHitSound = rifleHitSound;
+            List<KeyData> keys = service.ReadSavedKeys();
+            ConvertKeys(keys);
+        }
 
+        private Keys ConvertStringToKey(KeyData key)
+        {
+            return (Keys)Enum.Parse(typeof(Keys), key.Key, true);
+        }
+
+        private void ConvertKeys(List<KeyData> keys)
+        {
+            foreach (KeyData key in keys)
+            {
+                if(key.ButtonName == "UpKeyButton")
+                {
+                   UpKey = ConvertStringToKey(key);
+                }                   
+                if (key.ButtonName == "DownKeyButton")
+                {
+                    DownKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "LeftKeyButton")
+                {
+                   LeftKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "RightKeyButton")
+                {
+                    RightKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "SpecialButton")
+                {
+                    SpecialKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "SwitchButton")
+                {
+                    SwitchKey = ConvertStringToKey(key);
+                };
+                if (key.ButtonName == "AttackButton")
+                {
+                    AttackKey = ConvertStringToKey(key);
+                };
+            }
         }
 
         public override void Update(GameTime gameTime, List<Sprite> sprites)
@@ -67,11 +132,11 @@ namespace PacmanMonogame.Sprites
 
             currentMouseState = Mouse.GetState();
 
-            if (currentKey.IsKeyDown(Keys.A))
+            if (currentKey.IsKeyDown(RightKey))
             {
                 _rotation -= MathHelper.ToRadians(RotationVelocity);
             }
-            if (currentKey.IsKeyDown(Keys.E))
+            if (currentKey.IsKeyDown(LeftKey))
             {
                 _rotation += MathHelper.ToRadians(RotationVelocity);
             }
@@ -80,7 +145,7 @@ namespace PacmanMonogame.Sprites
             var direction = new Vector2((float)Math.Cos(MathHelper.ToRadians(180) - _rotation), -(float)Math.Sin(_rotation));
 
 
-            if (currentKey.IsKeyDown(Keys.S))
+            if (currentKey.IsKeyDown(DownKey))
             {
                 if (Position.X > Globals.ScreenWidth- 3)
                     Position.X = Globals.ScreenWidth - 5;
@@ -98,7 +163,7 @@ namespace PacmanMonogame.Sprites
 
 
             }
-            if (currentKey.IsKeyDown(Keys.Z))
+            if (currentKey.IsKeyDown(UpKey))
             {
                 if(Position.X >= Globals.ScreenWidth - 3)
                     Position.X = Globals.ScreenWidth - 5;
@@ -111,15 +176,17 @@ namespace PacmanMonogame.Sprites
 
                 else                
                     Position -= direction * LinearVelocity;
+
+                GlobalsStats.upKeyPressed++;
             }
 
 
-            if(currentKey.IsKeyDown(Keys.Q) && previousKey.IsKeyUp(Keys.Q))
+            if(currentKey.IsKeyDown(SwitchKey) && previousKey.IsKeyUp(SwitchKey))
             {
                 isSwitch = !isSwitch;
             }
             
-            if (currentKey.IsKeyDown(Keys.R) && previousKey.IsKeyUp(Keys.R))
+            if (currentKey.IsKeyDown(SpecialKey) && previousKey.IsKeyUp(SpecialKey))
             {
                 _timers += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
@@ -130,7 +197,7 @@ namespace PacmanMonogame.Sprites
                 }            
             }
 
-            if (currentKey.IsKeyDown(Keys.Space) && previousKey.IsKeyUp(Keys.Space))
+            if (currentKey.IsKeyDown(AttackKey) && previousKey.IsKeyUp(AttackKey))
             {
                 _timer += (float)gameTime.ElapsedGameTime.TotalSeconds;
              
@@ -142,6 +209,7 @@ namespace PacmanMonogame.Sprites
 
                         ShootBullet(sprites);
                         ShootCounter++;
+                        GlobalsStats.attackKeyPressed++;
                     }
                     else
                     {
@@ -161,6 +229,7 @@ namespace PacmanMonogame.Sprites
 
                         ShootRocket(sprites);
                         ShootRocketCounter++;
+                        GlobalsStats.attackKeyPressed++;
                     }
                     else
                     {
@@ -172,32 +241,27 @@ namespace PacmanMonogame.Sprites
 
                     }
                 }
-
-
+             
 
 
             }
+
         }
 
 
-        private void CheckLimit(Vector2 Position, bool sign, Vector2 direction)
-        {
-           
-      
-          
-        }
 
         public void ShootBullet(List<Sprite> sprites)
         {
             var direction = new Vector2((float)Math.Cos( _rotation), (float)Math.Sin(_rotation));
             var bullet = Bullet.Clone() as Bullet;
-                bullet.Direction = direction;
-                bullet.Position = this.Position;
-                bullet.LinearVelocity = this.LinearVelocity *2;
-                bullet.LifeSpan = 2f;
-                bullet.Parent = this;
-                 sprites.Add(bullet);
-            
+            bullet.Direction = direction;
+            bullet.Position = this.Position;
+            bullet.LinearVelocity = this.LinearVelocity *2;
+            bullet.LifeSpan = 2f;
+            bullet.Parent = this;
+            sprites.Add(bullet);
+            _rifleHitSound.Play();
+
         }
         public void ShootRocket(List<Sprite> sprites)
         {
@@ -209,7 +273,7 @@ namespace PacmanMonogame.Sprites
             rocket.LifeSpan = 2f;
             rocket.Parent = this;
             sprites.Add(rocket);
-
+            _rifleHitSound.Play();
 
         }
 
@@ -246,6 +310,7 @@ namespace PacmanMonogame.Sprites
             sprites.Add(bullet);
             sprites.Add(bullet2);
             sprites.Add(bullet3);
+             _rifleHitSound.Play();
         }
     }
 }

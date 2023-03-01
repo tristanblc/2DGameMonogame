@@ -14,14 +14,16 @@ namespace PacmanMonogame.States
     {
         private List<Button> components;
         private SpriteFont _font;
+        private Texture2D _texture;
         public GameOverState(Jeu game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
             var buttonTexture = _content.Load<Texture2D>("Button");
+            _texture = _content.Load<Texture2D>("gameover");
             _font = _content.Load<SpriteFont>("Font");
 
             var newGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(600, 400),
+                Position = new Vector2(500, 400),
                 Text = "New Game",
             };
 
@@ -29,7 +31,7 @@ namespace PacmanMonogame.States
 
             var menuGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1200, 400),
+                Position = new Vector2(900, 400),
                 Text = "Go to Menu",
             };
 
@@ -38,7 +40,7 @@ namespace PacmanMonogame.States
 
             var exitGameButton = new Button(buttonTexture, _font)
             {
-                Position = new Vector2(1200, 400),
+                Position = new Vector2(1300, 400),
                 Text = "Exit",
             };
 
@@ -85,8 +87,12 @@ namespace PacmanMonogame.States
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
+            var backgroundTexture = _content.Load<Texture2D>("Towel");
+            spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth, (int)Globals.ScreenHeight), Color.White);
+ 
+            spriteBatch.Draw(_texture, new Vector2(650, 100), Color.White);
 
-            spriteBatch.DrawString(_font, "Game over", new Vector2(850, 200), Color.Red);
+
 
             foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);

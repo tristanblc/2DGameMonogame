@@ -25,7 +25,7 @@ namespace PacmanMonogame
         protected override void Initialize()
         {
             this.Window.AllowUserResizing = false;
-            this.Window.Title = "Top Down Racing!";
+            this.Window.Title = "Shooter game!";
             _graphics.PreferredBackBufferWidth = ScreenWidth;
             _graphics.PreferredBackBufferHeight = ScreenHeight;
             this.Window.Title = "Shooter game";
