@@ -25,7 +25,7 @@ jobs:
 
       - run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true
       
-      - run: msbuild 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj  /p:Configuration=Release /p:Platform=x64
+      - run: msbuild.exe 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj  /p:Configuration=Release /p:Platform=x64
 
       - uses: actions/create-release@v1
         id: create_release
