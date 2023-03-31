@@ -24,7 +24,8 @@ jobs:
       - run: dotnet build ${{ env.PROJECT_PATH }} -c Release --restore
 
       - run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true
-
+      
+      - run: msbuild 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj  /p:Configuration=Release /p:Platform=x64
 
       - uses: actions/create-release@v1
         id: create_release
@@ -41,9 +42,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           pattern:  2DGameMonogame/bin/Release/net6.0/win-x64/publish/*.exe
           release-url: ${{ steps.create_release.outputs.upload_url }}
-          
-
-      - uses: actions/upload-artifact@v2
-        with:
-          name: setup
-          path: ${{ github.workspace }}\setup\setup.msi
+      
