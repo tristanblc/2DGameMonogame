@@ -25,7 +25,81 @@ jobs:
 
       - run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true
       
-      - run: msbuild.exe 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj  /p:Configuration=Release /p:Platform=x64
+      - run:Create free Team
+GitLab CI and MsBuild - Local CMD Works; GitLab Runner Doesn't?
+Asked 1 year ago
+Modified 1 year ago
+Viewed 1k times
+ Part of CI/CD Collective Collective
+
+1
+
+
+This is really bizarre, but I'm sure I'm misunderstanding or missing something simple.
+
+Whilst RDP'd to the Windows GitLab runner, the following command works without issue:
+
+"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" C:\GitLab-Runner\builds\rS1z3GJ3\0\folder1\client\build\ClientWebsite.msbuild /t:BuildAndPackage /nowarn:CS0618 /p:IisWebAppName=client /p:IncludeSetAclProviderOnDestination=False /p:ProductVersion=1
+Going by the MSBuild file, the build files are then created under C:\GitLab-Runner\builds\rS1z3GJ3\0\folder1\client\deploy_files.
+
+But when I run the exact same command in via the gitlab-ci.yml file, the deployment files aren't generated. The output from the GitLab job is:
+
+CMD.EXE "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" C:\GitLab-Runner\builds\rS1z3GJ3\0\folder1\client\build\ClientWebsite.msbuild /t:BuildAndPackage /nowarn:CS0618 /p:IisWebAppName=client /p:IncludeSetAclProviderOnDestination=False /p:ProductVersion=1 
+
+Microsoft Windows [Version 10.0.17763.2628] 
+
+(c) 2018 Microsoft Corporation. All rights reserved. 
+
+C:\GitLab-Runner\builds\rS1z3GJ3\0\folder1\client> 
+
+Cleaning up project directory and file based variables 00:00 Job succeeded
+I thought perhaps this was an issue with the user the GitLab Runner service was set to run as, but even when trying with a local admin user it still doesn't work. I suspected it was an issue with the cleaning up of the project directory, but even when setting the deployment files to be exported to a separate folder on another drive they still don't appear.
+
+What could I be doing wrong?
+
+Any help with this would be greatly appreciated.
+
+EDIT:
+
+GitLab Runner Config:
+
+concurrent = 1
+check_interval = 0
+
+[session_server]
+  session_timeout = 1800
+
+[[runners]]
+  name = "buildserver01"
+  url = "https://gitlab.company.co.uk"
+  token = "rS1z3GJ392utu-J-CkeM"
+  executor = "shell"
+  shell = "powershell"
+  [runners.custom_build_dir]
+  [runners.cache]
+    [runners.cache.s3]
+    [runners.cache.gcs]
+    [runners.cache.azure]
+GitLab-Ci.Yml File:
+
+variables:
+  SERVICE_NAME: "client"
+  NODE_VERSION: "14.15.3"
+
+stages:
+  - build $SERVICE_NAME package with MSBuild.exe
+
+build_package:
+  stage: build $SERVICE_NAME package with MSBuild.exe
+  tags: 
+    - client
+  script:
+    - echo "Installing NodeJS environment $NODE_VERSION if it's not already installed."
+    - nvm install $NODE_VERSION
+    - echo "Selecting NodeJS environment $NODE_VERSION using NVM"
+    - nvm use $NODE_VERSION
+    - echo "Creating the Web Deploy Package"
+    - CMD.EXE "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj  /p:Configuration=Release /p:Platform=x64
 
       - uses: actions/create-release@v1
         id: create_release
