@@ -42,3 +42,8 @@ jobs:
           pattern:  2DGameMonogame/bin/Release/net6.0/win-x64/publish/*.exe
           release-url: ${{ steps.create_release.outputs.upload_url }}
           
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: setup
+          path: ${{ github.workspace }}\setup\setup.msi
