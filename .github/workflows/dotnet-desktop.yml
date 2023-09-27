@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  PROJECT_PATH: /2DGameMonogame/PacmanMonogame/2DGameMonogame.csproj
+  PROJECT_PATH: 2DGameMonogame.csproj
   
 jobs:
    build:
