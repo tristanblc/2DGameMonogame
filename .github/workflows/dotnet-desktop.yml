@@ -7,26 +7,25 @@ on:
     branches: [ "main" ]
 
 env:
-  PROJECT_PATH: 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj
+  PROJECT_PATH: \2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj
   
 jobs:
    build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v2
 
-      - name: Setup .NET 📦
-        uses: actions/setup-dotnet@v3
+      - uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ env.DOTNET_VERSION }}
+          dotnet-version: 6.0.x
           
-      - name : Install dependencies 📂
+      - name : Restore  
         run: dotnet restore ${{ env.PROJECT_PATH }}
        
-      - name: Build 🧱
+      - name : Build 🧱
         run: dotnet build ${{ env.PROJECT_PATH }} -c Release --restore
 
-      - name : publish
+      - name: Publish 
         run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true --no-build
 
       - uses: actions/create-release@v1
