@@ -11,19 +11,23 @@ env:
   
 jobs:
    build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
-      - uses: actions/setup-dotnet@v1
+      - name: Setup .NET 📦
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
+          dotnet-version: ${{ env.DOTNET_VERSION }}
           
-      - run: dotnet restore ${{ env.PROJECT_PATH }}
+      - name : Install dependencies 📂
+        run: dotnet restore ${{ env.PROJECT_PATH }}
        
-      - run: dotnet build ${{ env.PROJECT_PATH }} -c Release --restore
+      - name: Build 🧱
+        run: dotnet build ${{ env.PROJECT_PATH }} -c Release --restore
 
-      - run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true --no-build
+      - name : publish
+        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true --no-build
 
       - uses: actions/create-release@v1
         id: create_release
