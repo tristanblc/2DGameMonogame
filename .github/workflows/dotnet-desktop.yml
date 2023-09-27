@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 env:
-  PROJECT_PATH: 2DGameMonogame.csproj
+  PROJECT_PATH: 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj
   
 jobs:
    build:
@@ -19,16 +19,16 @@ jobs:
         with:
           dotnet-version: 6.0.x
           
-      - name : Restore  
-        run: dotnet restore ${{ env.PROJECT_PATH }}
-      - name : Build 🧱
-
-        run: dotnet build ${{ env.PROJECT_PATH }} -c Release --restore
-
-      - name: Publish 
-        run: dotnet publish ${{ env.PROJECT_PATH }} -c Release --self-contained -r win-x64 -p:PublishSingleFile=true --no-build
-
-
+      - run: dotnet restore ${{ env.PROJECT_PATH }}
+       
+      - run: dotnet build ${{ env.PROJECT_PATH }} -c Release --restore
+      
+      - run: dotnet publish ${{ env.PROJECT_PATH }}  -c Release -r win-x64 /p:PublishReadyToRun=false /p:TieredCompilation=false --self-contained
+      - run : CMD.EXE "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\MSBuild\Current\Bin\MSBuild.exe" 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj  /p:Configuration=Release /p:Platform=x64  win-x64 -p:PublishSingleFile=true
+      
+      
+      
+      
       - uses: actions/create-release@v1
         id: create_release
         env:
