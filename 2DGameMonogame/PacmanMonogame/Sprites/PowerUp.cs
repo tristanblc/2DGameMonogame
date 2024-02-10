@@ -1,5 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using PacmanMonogame.Other;
 using Sprites;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,7 @@ namespace PacmanMonogame.Sprites
                 else
                 {
                     p.Health += this.HealthUp;
+                    GlobalsStats.powerUpUsed++;
                 }
                 IsRemoved = true;
                 
@@ -65,11 +67,12 @@ namespace PacmanMonogame.Sprites
                 if (enemy.Health + this.HealthUp > 100)
                 {
                     enemy.Health = 100;
-
+                    GlobalsStats.powerUpUsed++;
                 }
                 else
                 {
                     enemy.Health += this.HealthUp;
+                    GlobalsStats.powerUpUsed++;
                 }
             }
 

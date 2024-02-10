@@ -1,12 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
+
+using PacmanMonogame.Other;
 using PacmanMonogame.Services;
+using PacmanMonogame.States;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace PacmanMonogame.Sprites
 {
@@ -14,6 +20,7 @@ namespace PacmanMonogame.Sprites
     {
 
         public IService service;
+
         public float Speed { get; set; }
 
         public float Health = 100;
@@ -31,6 +38,9 @@ namespace PacmanMonogame.Sprites
         public float ShootCounter = 0;
         public float ShootRocketCounter = 0;
         public float ShootCounterMega = 0;
+
+
+        public float HighScoreShoot;
 
         public Keys UpKey;
         public Keys DownKey;
@@ -55,12 +65,15 @@ namespace PacmanMonogame.Sprites
         public Bullet Bullet;
         public Rocket Rocket;
 
-        public Player(Texture2D texture) : base(texture)
+        private  SoundEffect _rifleHitSound;
+
+        public Player(Texture2D texture, SoundEffect rifleHitSound) : base(texture)
         {
             Speed = 3f;
             Position = new Vector2(1000, 1000);
             isSwitch = false;
             service = new Service();
+            _rifleHitSound = rifleHitSound;
             List<KeyData> keys = service.ReadSavedKeys();
             ConvertKeys(keys);
         }
@@ -163,6 +176,8 @@ namespace PacmanMonogame.Sprites
 
                 else                
                     Position -= direction * LinearVelocity;
+
+                GlobalsStats.upKeyPressed++;
             }
 
 
@@ -194,6 +209,7 @@ namespace PacmanMonogame.Sprites
 
                         ShootBullet(sprites);
                         ShootCounter++;
+                        GlobalsStats.attackKeyPressed++;
                     }
                     else
                     {
@@ -213,6 +229,7 @@ namespace PacmanMonogame.Sprites
 
                         ShootRocket(sprites);
                         ShootRocketCounter++;
+                        GlobalsStats.attackKeyPressed++;
                     }
                     else
                     {
@@ -224,32 +241,27 @@ namespace PacmanMonogame.Sprites
 
                     }
                 }
-
-
+             
 
 
             }
+
         }
 
 
-        private void CheckLimit(Vector2 Position, bool sign, Vector2 direction)
-        {
-           
-      
-          
-        }
 
         public void ShootBullet(List<Sprite> sprites)
         {
             var direction = new Vector2((float)Math.Cos( _rotation), (float)Math.Sin(_rotation));
             var bullet = Bullet.Clone() as Bullet;
-                bullet.Direction = direction;
-                bullet.Position = this.Position;
-                bullet.LinearVelocity = this.LinearVelocity *2;
-                bullet.LifeSpan = 2f;
-                bullet.Parent = this;
-                 sprites.Add(bullet);
-            
+            bullet.Direction = direction;
+            bullet.Position = this.Position;
+            bullet.LinearVelocity = this.LinearVelocity *2;
+            bullet.LifeSpan = 2f;
+            bullet.Parent = this;
+            sprites.Add(bullet);
+            _rifleHitSound.Play();
+
         }
         public void ShootRocket(List<Sprite> sprites)
         {
@@ -261,7 +273,7 @@ namespace PacmanMonogame.Sprites
             rocket.LifeSpan = 2f;
             rocket.Parent = this;
             sprites.Add(rocket);
-
+            _rifleHitSound.Play();
 
         }
 
@@ -298,6 +310,7 @@ namespace PacmanMonogame.Sprites
             sprites.Add(bullet);
             sprites.Add(bullet2);
             sprites.Add(bullet3);
+             _rifleHitSound.Play();
         }
     }
 }

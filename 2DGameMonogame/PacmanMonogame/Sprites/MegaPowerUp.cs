@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PacmanMonogame.Other;
 
 namespace PacmanMonogame.Sprites
 {
@@ -50,7 +51,7 @@ namespace PacmanMonogame.Sprites
 
                 if(p.CooldownMega - p.ShootCounterMega   < 5)
                 {
-
+                    GlobalsStats.megaPowerUpUsed++;
                     p.ShootCounterMega--;
                 }            
             

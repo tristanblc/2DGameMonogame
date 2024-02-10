@@ -1,4 +1,5 @@
 ﻿using PäcmanMonogame.Controls;
+using PacmanMonogame.Other;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,5 +15,9 @@ namespace PacmanMonogame.Services
         List<KeyData> ReadSavedKeys();
 
         List<Button> ReadSavedKeysMenu(List<Button> buttons);
+
+        void SaveStats(SaveGame savedGame);
+
+        SaveGame ReadSave();
     }
 }

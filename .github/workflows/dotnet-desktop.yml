@@ -1,0 +1,44 @@
+name: .NET Core Desktop
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  PROJECT_PATH: 2DGameMonogame\PacmanMonogame\2DGameMonogame.csproj
+  
+jobs:
+   build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 6.0.x
+          
+      - run: dotnet restore ${{ env.PROJECT_PATH }}
+       
+      - run: dotnet build ${{ env.PROJECT_PATH }} -c Release --restore
+      
+      - run: dotnet publish ${{ env.PROJECT_PATH }}  -c Release -r win-x64 /p:PublishReadyToRun=false /p:TieredCompilation=false --self-contained
+     
+      
+      
+      - uses: actions/create-release@v1
+        id: create_release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name:  ${{ github.run_number }}_${{ github.run_attempt }}
+          release_name: ${{ github.run_number }}_${{ github.run_attempt }}
+          
+          
+
+      - uses: csexton/release-asset-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          pattern:  2DGameMonogame/PacmanMonogame/bin/Release/net6.0/win-x64/publish/*.exe
+          release-url: ${{ steps.create_release.outputs.upload_url }}

@@ -15,11 +15,13 @@ namespace PacmanMonogame.States
     public class MenuState : State
     {
         private List<Button> components;
+        private Texture2D shootertexture;
         private SpriteFont _font;
         public MenuState(Jeu game, GraphicsDevice graphicsDevice, ContentManager content)
            : base(game, graphicsDevice, content)
         {
             var buttonTexture = _content.Load<Texture2D>("Button");
+            shootertexture = _content.Load<Texture2D>("shooterpresentation");
             _font = _content.Load<SpriteFont>("Font");
 
             var newGameButton = new Button(buttonTexture,_font)
@@ -48,17 +50,35 @@ namespace PacmanMonogame.States
 
             quitGameButton.Click += Button_Quit_Clicked;
 
+
+
+
+            var highButton = new Button(buttonTexture, _font)
+            {
+                Position = new Vector2(900, 700),
+                Text = "High Score",
+            };
+
+            highButton.Click += Button_HighButton_Click;
             components = new List<Button>()
             {
                 newGameButton,
                 keyboardMenuButton,
                 quitGameButton,
+                highButton
             };
         }
+
+ 
 
         public override void LoadContent()
         {
            
+        }
+
+        private void Button_HighButton_Click(object sender, EventArgs e)
+        {
+            _game.ChangeState(new HighScoreState(_game, _graphicsDevice, _content));
         }
 
         private void Button_NewGame_Click(object sender, EventArgs e)
@@ -89,9 +109,10 @@ namespace PacmanMonogame.States
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Begin();
+            var backgroundTexture = _content.Load<Texture2D>("Towel");
+            spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth, (int)Globals.ScreenHeight), Color.White);
 
-            spriteBatch.DrawString(_font, "Shooter game", new Vector2(850, 200), Color.Black);
-
+            spriteBatch.Draw(shootertexture, new Vector2(600,100), Color.White);
             foreach (var component in components)
                 component.Draw(gameTime, spriteBatch);
 

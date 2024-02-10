@@ -1,9 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using PacmanMonogame.Core;
 using PacmanMonogame.Manager;
+using PacmanMonogame.Other;
+using PacmanMonogame.Services;
 using PacmanMonogame.Sprites;
 using Sprites;
 using System;
@@ -13,6 +17,7 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
 namespace PacmanMonogame.States
 {
@@ -32,12 +37,10 @@ namespace PacmanMonogame.States
         private Texture2D bulletTexture;
         private Texture2D floortexture;
         private Texture2D rocketTexture;
-      
+        private IService service;
 
 
-        private Rectangle rectangle;
-
-       
+        private Rectangle rectangle;      
 
         private Jeu _game;
         private List<Sprite> _sprites;
@@ -49,8 +52,11 @@ namespace PacmanMonogame.States
         private EnemyManager _enemyManager;
         private PowerUpManager _powerUpManager;
         private MegaPowerUpManager _megaManager;
+        private WallManager _wallManager;
         private Random _random;
         private int numberOfEnemies { get; set; } = 3 ;
+
+        private int enenykilled;
            
         public GameState(Jeu game, GraphicsDevice graphicsDevice, ContentManager content) : base(game, graphicsDevice, content)
         {
@@ -59,29 +65,63 @@ namespace PacmanMonogame.States
             _content = content;
             _random = new Random();
             _game = game;
+
+            service = new Service();
+
+
            
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
+      
             _spriteBatch.Begin();
+            _spriteBatch.Draw(backgroundTexture, new Rectangle(0, 0, (int)Globals.ScreenWidth,(int)Globals.ScreenHeight), Color.White);
+            
             foreach (var sprite in _sprites)
                 sprite.Draw(_spriteBatch);
 
-            _spriteBatch.DrawString(_font, $"Health : {player.Health}", new Vector2(50, 30), Color.Black);
-     
+            var t = new Texture2D(_graphicsDevice, 1, 1);
+            t.SetData(new[] { Color.White });
+            _spriteBatch.Draw(t, new Rectangle(20, 20, 150, 100), Color.LightBlue);
+
+
+            if (player.Health > 1)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(50, 20, 30, 30), Color.White);
+            }
+            if (player.Health > 25)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(70, 20, 30, 30), Color.White);
+            }
+            if (player.Health > 50)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(90, 20, 30, 30), Color.White);
+            }
+            if (player.Health > 75)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(110, 20, 30, 30), Color.White);
+            }
+            if (player.Health == 100)
+            {
+                _spriteBatch.Draw(powerUpTexture, new Rectangle(130, 20, 30, 30), Color.White);
+            }
             if (!player.isSwitch)
             {
-                _spriteBatch.DrawString(_font, $"Ammo : {player.Cooldown - player.ShootCounter}", new Vector2(50, 50), Color.Black);
+                _spriteBatch.Draw(bulletTexture, new Rectangle(50, 50, 30, 15), Color.White);
+                _spriteBatch.DrawString(_font, $"{player.Cooldown - player.ShootCounter}", new Vector2(100, 50), Color.Black);
             }                
             else
             {
-                _spriteBatch.DrawString(_font, $"Ammo Rocket : {player.CooldownRocket - player.ShootRocketCounter}", new Vector2(50, 50), Color.Black);
-             
-            }
-                
+                _spriteBatch.Draw(rocketTexture, new Rectangle(50, 50, 30, 25), Color.White);
+                _spriteBatch.DrawString(_font, $"{player.CooldownRocket - player.ShootRocketCounter}", new Vector2(100, 50), Color.Black);
 
-            _spriteBatch.DrawString(_font, $"Ammo Mega Shoot : {player.CooldownMega - player.ShootCounterMega}", new Vector2(50, 70), Color.Black);
+            }
+
+            _spriteBatch.DrawString(_font, $"Mega", new Vector2(50, 70), Color.Black);
+
+            _spriteBatch.Draw(bulletTexture, new Rectangle(100, 70, 30, 15), Color.White);
+            _spriteBatch.DrawString(_font, $" {player.CooldownMega - player.ShootCounterMega}", new Vector2(140, 70), Color.Black);
 
             _spriteBatch.End();
         }
@@ -94,31 +134,34 @@ namespace PacmanMonogame.States
 
 
             _texture = _content.Load<Texture2D>("play");
-            backgroundTexture = _content.Load<Texture2D>("ground");
+            backgroundTexture = _content.Load<Texture2D>("Towel");
             bulletTexture = _content.Load<Texture2D>("Bullet");
             _font = _content.Load<SpriteFont>("Font");
             healthTexture = _content.Load<Texture2D>("Healthbar");
             powerUpTexture = _content.Load<Texture2D>("hearth");
-            floortexture = _content.Load<Texture2D>("floor");
+            floortexture = _content.Load<Texture2D>("box");
             rocketTexture = _content.Load<Texture2D>("rocket");
 
-
+            
             rectangle = new Rectangle(0, 0, healthTexture.Width, healthTexture.Height);
             _powerUpManager = new PowerUpManager(powerUpTexture);
 
             _megaManager = new MegaPowerUpManager(bulletTexture);
-           
-
-            player = new Player(_texture)
+            var hitSong = _content.Load<SoundEffect>("hit");
+            var shootSong = _content.Load<SoundEffect>("shoot");
+;            player = new Player(_texture,shootSong)
             {
-                Position = new Vector2(100, 100),
+                Position = new Vector2(100, 600),
                 Origin = new Vector2(_texture.Width / 2, _texture.Height / 2),
-                Bullet = new Bullet(bulletTexture),
+                Bullet = new Bullet(bulletTexture,hitSong),
                 Rocket = new Rocket(rocketTexture)
 
             };
 
-            _enemyManager = new EnemyManager(_texture, bulletTexture, player);
+            _enemyManager = new EnemyManager(_texture, bulletTexture, player,_content);
+
+            _wallManager = new WallManager(floortexture);
+
 
             var rock = new Rock(floortexture)
             {
@@ -128,14 +171,14 @@ namespace PacmanMonogame.States
             };
             _sprites = new List<Sprite>() {
                 player,
-                rock
-               
+                rock               
             };
             _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
             {
                 _sprites.Add(x);
             });
-
+            _wallManager.SpawnWall().ForEach( x => { _sprites.Add(x); });
+             
         }
 
 
@@ -193,25 +236,58 @@ namespace PacmanMonogame.States
             foreach (var sprite in _sprites.ToArray())
                 sprite.Update(gameTime, _sprites);
 
+         
+
             var countEnemies = 0;
+            var countWall = 0;
             foreach(var sprite in _sprites)
-                if(sprite is Enemy)
+            {
+                if (sprite is Enemy)
                     countEnemies++;
-
-
+                if (sprite is Rock)
+                    countWall++;
+            }
+               
+              
             if(countEnemies == 0) 
             {
-                _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>
-                {
-                    _sprites.Add(x);
-                });
+                _enemyManager.SpawnEnemies(numberOfEnemies).ForEach(x =>{ _sprites.Add(x);  });
+             
             }
             player.Update(gameTime,_sprites);
 
 
             if (player.isDead)
             {
+                var lastScore = service.ReadSave().score;
+
+                float newScore = (float)(10 * GlobalsStats.enemyKilled + 5 * GlobalsStats.attackKeyPressed - 4 * GlobalsStats.powerUpUsed);
+
+                if (lastScore < newScore)
+                {
+                    SaveGame save = new SaveGame();
+                    save.score = newScore;
+                    save.attackKeyPressed = GlobalsStats.attackKeyPressed;
+                    save.upKeyPressed = GlobalsStats.upKeyPressed;
+                    save.powerUpUsed = GlobalsStats.powerUpUsed;
+                    save.boxKilled = GlobalsStats.boxKilled;
+                    save.enemyKilled = GlobalsStats.enemyKilled;
+                    service.SaveStats(save);
+                }
+
+                GlobalsStats.attackKeyPressed = 0;
+                GlobalsStats.enemyKilled = 0;
+                GlobalsStats.boxKilled = 0;
+                GlobalsStats.upKeyPressed = 0;
+                GlobalsStats.powerUpUsed = 0;
+
                 _game.ChangeState(new GameOverState(_game, _graphicsDevice, _content));
+            }
+
+            var randomNumberWall = _random.Next(0, 100000);
+            if (randomNumberWall > 99500 && countWall == 0)
+            { 
+                _wallManager.SpawnWall().ForEach(x => { _sprites.Add(x); });
             }
 
             var randomNumber = _random.Next(0, 100000);
