@@ -1,6 +1,5 @@
 # Game using monogame engine
 
-
 A 2D shooter game using Monogame
 ## Installation
 
@@ -16,3 +15,4 @@ Please make sure to update tests as appropriate.
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
+
