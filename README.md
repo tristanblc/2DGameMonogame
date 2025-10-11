@@ -12,6 +12,7 @@ to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
+Not maintened
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
