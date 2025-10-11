@@ -1,4 +1,5 @@
 <!-- omit in toc -->
+######This project is not maintened#####
 # Contributing to 2DGameMonogame
 
 First off, thanks for taking the time to contribute! ❤️
